@@ -1,0 +1,13 @@
+---
+title: Analytic Article
+author: Alex
+date: '2018-02-19'
+slug: analytic-article
+categories: []
+tags:
+  - R
+  - analysis
+  - visualization
+  - regression
+---
+
