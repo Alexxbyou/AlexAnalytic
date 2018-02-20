@@ -12,13 +12,13 @@
     
     
     <item>
-      <title>Analysis 2</title>
-      <link>/analysis/analysis-2/</link>
+      <title>Test Article 2</title>
+      <link>/analysis/test-article-2/</link>
       <pubDate>Tue, 20 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>/analysis/analysis-2/</guid>
-      <description>First, load in data.
-## Loading required package: ggplot2  ## Warning: package &#39;ggplot2&#39; was built under R version 3.3.2  ## Loading required package: dplyr  ## Warning: package &#39;dplyr&#39; was built under R version 3.3.2  ## ## Attaching package: &#39;dplyr&#39;  ## The following objects are masked from &#39;package:stats&#39;: ## ## filter, lag  ## The following objects are masked from &#39;package:base&#39;: ## ## intersect, setdiff, setequal, union  Visualize age distribution.</description>
+      <guid>/analysis/test-article-2/</guid>
+      <description>High dimensional scatterplot, diagnal plots are the
+require(GGally)## Loading required package: GGallydata(tips, package=&amp;quot;reshape&amp;quot;)ggpairs(data=tips, # data.frame with variablescolumns=1:3, # columns to plot, default to all.title=&amp;quot;tips data&amp;quot;, # title of the plotmapping=ggplot2::aes(colour = sex)#colour = &amp;quot;sex&amp;quot;) # aesthetics, ggplot2 style## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.Density plot by category</description>
     </item>
     
     <item>
@@ -28,7 +28,7 @@
       
       <guid>/analysis/analytic-article/</guid>
       <description>First, load in data.
-## Loading required package: ggplot2 ## Warning: package &amp;#39;ggplot2&amp;#39; was built under R version 3.3.2 ## Loading required package: dplyr ## Warning: package &amp;#39;dplyr&amp;#39; was built under R version 3.3.2 ## ## Attaching package: &amp;#39;dplyr&amp;#39; ## The following objects are masked from &amp;#39;package:stats&amp;#39;: ## ## filter, lag ## The following objects are masked from &amp;#39;package:base&amp;#39;: ## ## intersect, setdiff, setequal, union Visualize age distribution.
+## Loading required package: ggplot2## Warning: package &amp;#39;ggplot2&amp;#39; was built under R version 3.3.2## Loading required package: dplyr## Warning: package &amp;#39;dplyr&amp;#39; was built under R version 3.3.2## ## Attaching package: &amp;#39;dplyr&amp;#39;## The following objects are masked from &amp;#39;package:stats&amp;#39;:## ## filter, lag## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## intersect, setdiff, setequal, unionVisualize age distribution.
 Visualize Gender.</description>
     </item>
     
