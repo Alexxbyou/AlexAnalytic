@@ -11,3 +11,25 @@ tags:
   - regression
 ---
 
+
+First, load in data.
+```{r, include=FALSE}
+source("R source/BDVis.R")
+data<-readRDS("R source/data.RDS")
+```
+
+Visualize age distribution.
+```{r, include=FALSE}
+
+age.vis(data[,getcolumn("age",data)])
+```
+
+Visualize Gender.
+```{r, include=FALSE}
+gender.df<-as.data.frame(table(data$gender.factor))
+cat.vis.donut(gender.df)
+```
+
+
+
+
