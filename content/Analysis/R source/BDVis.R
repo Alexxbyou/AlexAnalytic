@@ -14,7 +14,9 @@ require(dplyr)
 # Age Visualization
 ##########################
 
-
+getcolumn<-function(name,df,column.name=T){
+  grep(name,names(df),ignore.case = T,value=column.name)
+}
 
 cutoff2label<-function(cutoff){
   np<-length(cutoff)
@@ -106,6 +108,7 @@ cat.vis.donut<-function(
 ){
   names(data)<-c("Category","Count")
   data$Perc<-data$Count/sum(data$Count)
+  order<-order[1]
   if(order=="default")
     data$Category<-factor(data$Category,levels=rev(data$Category))
   if(order=="alphabet")
@@ -125,7 +128,7 @@ cat.vis.donut<-function(
     geom_text(data=data,mapping=aes(x=3.5,y=Perc,label=label.perc,vjust=.1))+
     coord_polar(theta="y") +
     xlab("")+ylab("")+ggtitle(Title)+
-  xlim(c(0, 4)) +
+    xlim(c(0, 4)) +
     theme(panel.grid=element_blank(),
           axis.text=element_blank(),
           axis.ticks=element_blank(),
@@ -145,6 +148,7 @@ Prev.vis<-function(
   Title="Disease Prevalence",
   confidence=.95
 ){
+  order<-order[1]
   if(order=="default")
     prev.df$Disease<-factor(prev.df$Disease,levels=rev(prev.df$Disease))
   if(order=="alphabet")

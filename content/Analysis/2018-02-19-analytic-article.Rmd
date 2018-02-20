@@ -1,31 +1,32 @@
 ---
-title: Analytic Article
-author: Alex
+title: "Analytic Article"
+author: "Alex"
 date: '2018-02-19'
 slug: analytic-article
-categories: []
 tags:
-  - R
-  - analysis
-  - visualization
-  - regression
+- R
+- analysis
+- visualization
+- regression
+categories: []
 ---
 
 
 First, load in data.
-```{r, include=FALSE}
+```{r,echo=F}
 source("R source/BDVis.R")
 data<-readRDS("R source/data.RDS")
 ```
 
 Visualize age distribution.
-```{r, include=FALSE}
 
+```{r,echo=F}
 age.vis(data[,getcolumn("age",data)])
 ```
 
 Visualize Gender.
-```{r, include=FALSE}
+
+```{r,echo=F}
 gender.df<-as.data.frame(table(data$gender.factor))
 cat.vis.donut(gender.df)
 ```
