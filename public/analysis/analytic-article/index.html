@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Hugo 0.32.4" />
+<meta name="generator" content="Hugo 0.36" />
 
 
 <title>Analytic Article - A Hugo website</title>
@@ -16,6 +16,11 @@
 
 
 
+
+
+
+
+<link href='//cdn.bootcss.com/highlight.js/9.11.0/styles/github.min.css' rel='stylesheet' type='text/css' />
 
 
 
@@ -60,7 +65,24 @@
     
 
     <div class="article-content">
-      
+      <p>First, load in data.</p>
+<pre><code>## Loading required package: ggplot2</code></pre>
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 3.3.2</code></pre>
+<pre><code>## Loading required package: dplyr</code></pre>
+<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 3.3.2</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<p>Visualize age distribution.</p>
+<p><img src="/Analysis/2018-02-19-analytic-article_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Visualize Gender.</p>
+<p><img src="/Analysis/2018-02-19-analytic-article_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+
     </div>
   </article>
 
@@ -82,6 +104,18 @@
 
     </div>
     
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/highlight.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/languages/r.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
 
     
 
