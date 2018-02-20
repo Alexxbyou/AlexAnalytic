@@ -1,0 +1,64 @@
+---
+title: Analysis 2
+author: Alex
+date: '2018-02-20'
+slug: analysis-2
+categories:
+  - R
+tags:
+  - analysis
+  - plot
+  - R
+  - R Markdown
+  - regression
+  - visualization
+---
+
+
+
+First, load in data.
+
+```
+## Loading required package: ggplot2
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 3.3.2
+```
+
+```
+## Loading required package: dplyr
+```
+
+```
+## Warning: package 'dplyr' was built under R version 3.3.2
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+Visualize age distribution.
+
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
+
+Visualize Gender.
+
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
+
+
+
+

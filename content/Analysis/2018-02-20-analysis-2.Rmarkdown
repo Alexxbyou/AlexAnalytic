@@ -1,14 +1,19 @@
 ---
-title: Analytic Article
+title: Analysis 2
 author: Alex
-date: '2018-02-19'
+date: '2018-02-20'
+slug: analysis-2
+categories:
+  - R
 tags:
   - analysis
+  - plot
   - R
+  - R Markdown
   - regression
   - visualization
-slug: analytic-article
 ---
+
 
 
 First, load in data.
