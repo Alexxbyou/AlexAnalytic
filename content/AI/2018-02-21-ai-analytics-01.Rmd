@@ -1,17 +1,17 @@
 ---
-title: AI analytics 1 - Overview of dataset
-author: Alex
+title: "AI analytics 1 - Overview of dataset"
+author: "Alex"
 date: '2018-02-21'
 slug: ai-analytics
-categories:
-  - R
-  - AI
 tags:
-  - analysis
-  - visualization
-  - regression
-  - machine learning
-  - AI
+- analysis
+- visualization
+- regression
+- machine learning
+- AI
+categories:
+- R
+- AI
 ---
 
 
