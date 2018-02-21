@@ -1,0 +1,127 @@
+---
+title: "AI Analytics 2 - Data Comparison"
+author: Alex
+date: '2018-02-21'
+slug: ai-analytic-02
+categories:
+  - AI
+  - R
+tags:
+  - AI
+  - analysis
+  - machine learning
+  - plot
+  - R
+  - R Markdown
+  - regression
+  - visualization
+---
+
+Read in data and functions
+```{r}
+source("2018-02-21-ai-analytics/BDVis.R")
+CH1.demo<-readRDS("2018-02-21-ai-analytics/CH1.demo.RDS")
+CH1.out<-readRDS("2018-02-21-ai-analytics/CH1.out.RDS")
+pat.grp<-CH1.out[,1:2]
+pat.grp$Death<-sapply(as.character(pat.grp$Death),function(x)switch(x,"0"="Alive","1"="Death"))
+names(pat.grp)[2]<-"group"
+CH1.demo<-left_join(CH1.demo,pat.grp)
+```
+
+
+Visualization code
+```{R}
+#Age distribution
+vis.age<-age.vis(CH1.demo[,getcolumn("age|group",CH1.demo)])
+
+
+#Gender distribution
+cat.df<-col.aggr("gender|group",CH1.demo)
+vis.gender<-cat.vis(cat.df,Title="Gender")
+
+
+#Race distribution
+cat.df<-col.aggr("Race|group",CH1.demo)
+vis.race<-cat.vis(cat.df,Title="Ethnicity")
+
+
+#Marital status distribution
+cat.df<-col.aggr("marital|group",CH1.demo)
+cat.df[c(1,6),1]<-"Devorced"
+vis.marital<-cat.vis(cat.df,Title="Marital Status")
+
+
+#Medifund distribution
+cat.df<-col.aggr("mediFundHx|group",CH1.demo)
+cat.df[,1]<-rep(c("No","Yes"),2)
+vis.medifund<-cat.vis(cat.df,Title="MediFund")
+
+
+
+#Diabetes year distribution
+cat.df<-col.aggr("Diabetes_year|group",CH1.demo)
+cat.df$Diabetes_year<-factor(cat.df$Diabetes_year,levels=cat.df[c(1,3:5,2),1])
+vis.diab.yr<-cat.vis(cat.df,Title="Diabetes Year")
+
+
+#Patient type distribution
+cat.df<-col.aggr("PAT_TYPE|group",CH1.demo)
+vis.pat_type<-cat.vis(cat.df,Title="Patient type")
+
+
+
+#Disease Prevalence
+prev.df<-cols.aggr(CH1.demo[8:19])
+prev.df$Disease[c(7,11,12)]<-c("Heart Failure","Major Amputation","Minor Amputation")
+prev.df<-df.sort(prev.df)
+vis.prev<-Prev.vis(prev.df)
+```
+## Individual Visualization
+
+Age distribution
+```{r}
+vis.age
+```
+
+Gender distribution
+```{r}
+vis.gender
+```
+
+Race distribution
+```{r}
+vis.race
+```
+
+Marital status distribution
+```{r}
+vis.marital
+```
+
+Medifund distribution
+```{r}
+vis.medifund
+```
+
+
+Diabetes year distribution
+```{r}
+vis.diab.yr
+```
+
+Patient type distribution
+```{r}
+vis.pat_type
+```
+
+## Dashboard
+### Demographic
+```{r,fig.asp = 1.2,fig.width=10}
+grid.arrange(vis.age,vis.gender,vis.race,vis.marital,layout_matrix=matrix(1:4,2,2,byrow=T))
+```
+
+
+Disease related history
+```{r,fig.asp = 1.2,fig.width=10}
+grid.arrange(vis.diab.yr,vis.medifund,vis.pat_type,layout_matrix=matrix(c(1,1,2,3),2,2,byrow=T))
+```

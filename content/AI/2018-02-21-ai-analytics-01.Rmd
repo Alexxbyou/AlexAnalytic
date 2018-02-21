@@ -1,5 +1,5 @@
 ---
-title: "AI analytics 1 - Overview of dataset"
+title: "AI Analytics 1 - Overview of Dataset"
 author: "Alex"
 date: '2018-02-21'
 slug: ai-analytics
@@ -19,7 +19,6 @@ Read in data and functions
 ```{r}
 source("2018-02-21-ai-analytics/BDVis.R")
 CH1.demo<-readRDS("2018-02-21-ai-analytics/CH1.demo.RDS")
-CH2.demo<-readRDS("2018-02-21-ai-analytics/CH2.demo.RDS")
 ```
 
 ### Visualization procedure:
@@ -76,7 +75,8 @@ vis.pat_type<-cat.vis(cat.df,Title="Patient type")
 #Disease Prevalence
 prev.df<-cols.aggr(CH1.demo[8:19])
 prev.df$Disease[c(7,11,12)]<-c("Heart Failure","Major Amputation","Minor Amputation")
-vis.prev<-Prev.vis(prev.df,order="desc")
+prev.df<-df.sort(prev.df)
+vis.prev<-Prev.vis(prev.df)
 ```
 
 

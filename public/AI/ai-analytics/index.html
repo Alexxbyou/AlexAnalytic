@@ -6,8 +6,8 @@
 <meta name="generator" content="Hugo 0.36" />
 
 
-<title>AI analytics 1 - Overview of dataset - A Hugo website</title>
-<meta property="og:title" content="AI analytics 1 - Overview of dataset - A Hugo website">
+<title>AI Analytics 1 - Overview of Dataset - A Hugo website</title>
+<meta property="og:title" content="AI Analytics 1 - Overview of Dataset - A Hugo website">
 
 
 
@@ -60,7 +60,7 @@
   <article class="article">
     
 
-    <h1 class="article-title">AI analytics 1 - Overview of dataset</h1>
+    <h1 class="article-title">AI Analytics 1 - Overview of Dataset</h1>
 
     
 
@@ -68,7 +68,9 @@
       <p>Read in data and functions</p>
 <pre class="r"><code>source(&quot;2018-02-21-ai-analytics/BDVis.R&quot;)</code></pre>
 <pre><code>## Loading required package: ggplot2</code></pre>
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 3.3.2</code></pre>
 <pre><code>## Loading required package: dplyr</code></pre>
+<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 3.3.2</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;dplyr&#39;</code></pre>
 <pre><code>## The following objects are masked from &#39;package:stats&#39;:
@@ -83,8 +85,7 @@
 <pre><code>## The following object is masked from &#39;package:dplyr&#39;:
 ## 
 ##     combine</code></pre>
-<pre class="r"><code>CH1.demo&lt;-readRDS(&quot;2018-02-21-ai-analytics/CH1.demo.RDS&quot;)
-CH2.demo&lt;-readRDS(&quot;2018-02-21-ai-analytics/CH2.demo.RDS&quot;)</code></pre>
+<pre class="r"><code>CH1.demo&lt;-readRDS(&quot;2018-02-21-ai-analytics/CH1.demo.RDS&quot;)</code></pre>
 <div id="visualization-procedure" class="section level3">
 <h3>Visualization procedure:</h3>
 <ol style="list-style-type: decimal">
@@ -138,7 +139,8 @@ vis.pat_type&lt;-cat.vis(cat.df,Title=&quot;Patient type&quot;)
 #Disease Prevalence
 prev.df&lt;-cols.aggr(CH1.demo[8:19])
 prev.df$Disease[c(7,11,12)]&lt;-c(&quot;Heart Failure&quot;,&quot;Major Amputation&quot;,&quot;Minor Amputation&quot;)
-vis.prev&lt;-Prev.vis(prev.df,order=&quot;desc&quot;)</code></pre>
+prev.df&lt;-df.sort(prev.df)
+vis.prev&lt;-Prev.vis(prev.df)</code></pre>
 </div>
 <div id="individual-visualization" class="section level2">
 <h2>Individual Visualization</h2>
