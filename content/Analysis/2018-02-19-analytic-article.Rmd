@@ -8,11 +8,14 @@ tags:
   - regression
   - visualization
 slug: analytic-article
+#output: html_document
+#runtime: shiny
 ---
 
 
 First, load in data.
 ```{r,echo=F}
+library(ggvis)
 source("R source/BDVis.R")
 data<-readRDS("R source/data.RDS")
 ```
@@ -29,6 +32,16 @@ Visualize Gender.
 gender.df<-as.data.frame(table(data$gender.factor))
 cat.vis.donut(gender.df)
 ```
+
+
+```{R}
+mtcars %>% 
+  ggvis(~wt) %>% 
+  layer_histograms(width =  input_slider(0, 2, step = 0.10, label = "width"),
+                   center = input_slider(0, 2, step = 0.05, label = "center"))
+```
+
+
 
 
 

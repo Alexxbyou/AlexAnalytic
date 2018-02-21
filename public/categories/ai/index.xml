@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ai on A Hugo website</title>
+    <link>/categories/ai/</link>
+    <description>Recent content in Ai on A Hugo website</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 21 Feb 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/ai/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>AI analytics 1 - Overview of dataset</title>
+      <link>/ai/ai-analytics/</link>
+      <pubDate>Wed, 21 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/ai/ai-analytics/</guid>
+      <description>Read in data and functions
+source(&amp;quot;2018-02-21-ai-analytics/BDVis.R&amp;quot;)## Loading required package: ggplot2## Loading required package: dplyr## ## Attaching package: &amp;#39;dplyr&amp;#39;## The following objects are masked from &amp;#39;package:stats&amp;#39;:## ## filter, lag## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## intersect, setdiff, setequal, union## Loading required package: gridExtra## ## Attaching package: &amp;#39;gridExtra&amp;#39;## The following object is masked from &amp;#39;package:dplyr&amp;#39;:## ## combineCH1.demo&amp;lt;-readRDS(&amp;quot;2018-02-21-ai-analytics/CH1.demo.RDS&amp;quot;)CH2.demo&amp;lt;-readRDS(&amp;quot;2018-02-21-ai-analytics/CH2.demo.RDS&amp;quot;)Visualization procedure:Use the column name to quote the column, aggregate the column, see function col.</description>
+    </item>
+    
+  </channel>
+</rss>

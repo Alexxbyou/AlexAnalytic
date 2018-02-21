@@ -1,5 +1,5 @@
 ---
-title: Test Article 2
+title: Visualization collection
 author: Alex
 date: '2018-02-20'
 slug: test-article-2
