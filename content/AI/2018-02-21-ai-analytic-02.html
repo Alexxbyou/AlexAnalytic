@@ -22,9 +22,7 @@ tags:
 <p>Read in data and functions</p>
 <pre class="r"><code>source(&quot;2018-02-21-ai-analytics/BDVis.R&quot;)</code></pre>
 <pre><code>## Loading required package: ggplot2</code></pre>
-<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 3.3.2</code></pre>
 <pre><code>## Loading required package: dplyr</code></pre>
-<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 3.3.2</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;dplyr&#39;</code></pre>
 <pre><code>## The following objects are masked from &#39;package:stats&#39;:
@@ -53,34 +51,43 @@ vis.age&lt;-age.vis(CH1.demo[,getcolumn(&quot;age|group&quot;,CH1.demo)])
 
 #Gender distribution
 cat.df&lt;-col.aggr(&quot;gender|group&quot;,CH1.demo)
-vis.gender&lt;-cat.vis(cat.df,Title=&quot;Gender&quot;)</code></pre>
-<pre><code>## Joining, by = &quot;Group&quot;</code></pre>
-<pre class="r"><code>#Race distribution
+vis.gender&lt;-cat.vis(cat.df,Title=&quot;Gender&quot;)
+
+
+#Race distribution
 cat.df&lt;-col.aggr(&quot;Race|group&quot;,CH1.demo)
-vis.race&lt;-cat.vis(cat.df,Title=&quot;Ethnicity&quot;)</code></pre>
-<pre><code>## Joining, by = &quot;Group&quot;</code></pre>
-<pre class="r"><code>#Marital status distribution
+vis.race&lt;-cat.vis(cat.df,Title=&quot;Ethnicity&quot;)
+
+
+#Marital status distribution
 cat.df&lt;-col.aggr(&quot;marital|group&quot;,CH1.demo)
 cat.df[c(1,6),1]&lt;-&quot;Devorced&quot;
-vis.marital&lt;-cat.vis(cat.df,Title=&quot;Marital Status&quot;)</code></pre>
-<pre><code>## Joining, by = &quot;Group&quot;</code></pre>
-<pre class="r"><code>#Medifund distribution
+vis.marital&lt;-cat.vis(cat.df,Title=&quot;Marital Status&quot;)
+
+
+#Medifund distribution
 cat.df&lt;-col.aggr(&quot;mediFundHx|group&quot;,CH1.demo)
 cat.df[,1]&lt;-rep(c(&quot;No&quot;,&quot;Yes&quot;),2)
-vis.medifund&lt;-cat.vis(cat.df,Title=&quot;MediFund&quot;)</code></pre>
-<pre><code>## Joining, by = &quot;Group&quot;</code></pre>
-<pre class="r"><code>#Diabetes year distribution
+vis.medifund&lt;-cat.vis(cat.df,Title=&quot;MediFund&quot;)
+
+
+
+#Diabetes year distribution
 cat.df&lt;-col.aggr(&quot;Diabetes_year|group&quot;,CH1.demo)
 cat.df$Diabetes_year&lt;-factor(cat.df$Diabetes_year,levels=cat.df[c(1,3:5,2),1])
-vis.diab.yr&lt;-cat.vis(cat.df,Title=&quot;Diabetes Year&quot;)</code></pre>
-<pre><code>## Joining, by = &quot;Group&quot;</code></pre>
-<pre class="r"><code>#Patient type distribution
+vis.diab.yr&lt;-cat.vis(cat.df,Title=&quot;Diabetes Year&quot;)
+
+
+#Patient type distribution
 cat.df&lt;-col.aggr(&quot;PAT_TYPE|group&quot;,CH1.demo)
-vis.pat_type&lt;-cat.vis(cat.df,Title=&quot;Patient type&quot;)</code></pre>
-<pre><code>## Joining, by = &quot;Group&quot;</code></pre>
-<pre class="r"><code>#Disease Prevalence
-prev.df&lt;-cols.aggr(CH1.demo[8:19])
-prev.df$Disease[c(7,11,12)]&lt;-c(&quot;Heart Failure&quot;,&quot;Major Amputation&quot;,&quot;Minor Amputation&quot;)
+vis.pat_type&lt;-cat.vis(cat.df,Title=&quot;Patient type&quot;)
+
+
+
+#Disease Prevalence
+demo.sub&lt;-CH1.demo[,c(8:19,22)]
+names(demo.sub)[c(7,11,12)]&lt;-c(&quot;Heart Failure&quot;,&quot;Major Amputation&quot;,&quot;Minor Amputation&quot;)
+prev.df&lt;-cols.aggr(demo.sub)
 prev.df&lt;-df.sort(prev.df)
 vis.prev&lt;-Prev.vis(prev.df)</code></pre>
 <div id="individual-visualization" class="section level2">
@@ -106,15 +113,21 @@ vis.prev&lt;-Prev.vis(prev.df)</code></pre>
 <p>Patient type distribution</p>
 <pre class="r"><code>vis.pat_type</code></pre>
 <p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Disease Prevalence</p>
+<pre class="r"><code>vis.prev</code></pre>
+<p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 </div>
 <div id="dashboard" class="section level2">
 <h2>Dashboard</h2>
 <div id="demographic" class="section level3">
 <h3>Demographic</h3>
 <pre class="r"><code>grid.arrange(vis.age,vis.gender,vis.race,vis.marital,layout_matrix=matrix(1:4,2,2,byrow=T))</code></pre>
-<p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-10-1.png" width="960" /></p>
+<p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-11-1.png" width="960" /></p>
 <p>Disease related history</p>
 <pre class="r"><code>grid.arrange(vis.diab.yr,vis.medifund,vis.pat_type,layout_matrix=matrix(c(1,1,2,3),2,2,byrow=T))</code></pre>
-<p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-11-1.png" width="960" /></p>
+<p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-12-1.png" width="960" /></p>
+<p>Disease prevalence</p>
+<pre class="r"><code>vis.prev</code></pre>
+<p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 </div>
 </div>

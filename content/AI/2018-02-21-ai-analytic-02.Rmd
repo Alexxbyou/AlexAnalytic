@@ -71,8 +71,9 @@ vis.pat_type<-cat.vis(cat.df,Title="Patient type")
 
 
 #Disease Prevalence
-prev.df<-cols.aggr(CH1.demo[8:19])
-prev.df$Disease[c(7,11,12)]<-c("Heart Failure","Major Amputation","Minor Amputation")
+demo.sub<-CH1.demo[,c(8:19,22)]
+names(demo.sub)[c(7,11,12)]<-c("Heart Failure","Major Amputation","Minor Amputation")
+prev.df<-cols.aggr(demo.sub)
 prev.df<-df.sort(prev.df)
 vis.prev<-Prev.vis(prev.df)
 ```
@@ -114,6 +115,11 @@ Patient type distribution
 vis.pat_type
 ```
 
+Disease Prevalence
+```{R}
+vis.prev
+```
+
 ## Dashboard
 ### Demographic
 ```{r,fig.asp = 1.2,fig.width=10}
@@ -124,4 +130,10 @@ grid.arrange(vis.age,vis.gender,vis.race,vis.marital,layout_matrix=matrix(1:4,2,
 Disease related history
 ```{r,fig.asp = 1.2,fig.width=10}
 grid.arrange(vis.diab.yr,vis.medifund,vis.pat_type,layout_matrix=matrix(c(1,1,2,3),2,2,byrow=T))
+```
+
+
+Disease prevalence
+```{r}
+vis.prev
 ```

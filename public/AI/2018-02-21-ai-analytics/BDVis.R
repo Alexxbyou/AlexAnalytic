@@ -10,6 +10,53 @@ require(ggplot2)
 require(dplyr)
 require(gridExtra)
 
+
+
+##########################
+# Column functions for data preparation
+##########################
+
+# multiple columns, to solve the frequency or prevalence
+col.aggr<-function(name,df){
+  as.data.frame(table(df[,getcolumn(name,df)]),stringsAsFactors=F)
+}
+
+# retrieve the column name according to the given search
+getcolumn<-function(name,df,column.name=T){
+  grep(name,names(df),ignore.case = T,value=column.name)
+}
+
+
+# multiple columns, to solve the frequency or prevalence
+cols.aggr<-function(data,prev=T){
+  grp.col<-which(grepl("group|grp",names(data),ignore.case = T))
+  if(length(grp.col)>0){
+    grp.list<-unique(data[,grp.col])
+    prev.list<-lapply(grp.list,function(grp){
+      df<-data[data[,grp.col]==grp,-grp.col]
+      rslt<-cols.aggr.sing(df,prev)
+      rslt$group<-grp
+      return(rslt)
+    })
+    prev.df<-do.call(rbind.data.frame,prev.list)
+    return(prev.df)
+  }else{
+    prev.df<-cols.aggr.sing(data,prev)
+    return(prev.df)
+  }
+}
+
+cols.aggr.sing<-function(df,prev=T){
+  func<-ifelse(prev,"mean","sum")
+  prev.c<-apply(df,2,get(func))
+  prev.df<-data.frame(
+    Disease=names(prev.c),
+    Prevalence=prev.c,
+    stringsAsFactors = F
+  )
+  return(prev.df)
+}
+
 ##########################
 # Data frame, sort, factorize
 ##########################
@@ -29,34 +76,16 @@ lvl.sort<-function(data,desc=T){
   return(lvl)
 }
 
-
-
-
 ##########################
-# Column functions for data preparation
+# find cumu mid for donut
 ##########################
 
-# multiple columns, to solve the frequency or prevalence
-col.aggr<-function(name,df){
-  as.data.frame(table(df[,getcolumn(name,df)]),stringsAsFactors=F)
+vec.cumu<-function(x){
+  sapply(1:length(x),function(a)sum(x[1:a]))
 }
 
-# retrieve the column name according to the given search
-getcolumn<-function(name,df,column.name=T){
-  grep(name,names(df),ignore.case = T,value=column.name)
-}
-
-
-# multiple columns, to solve the frequency or prevalence
-cols.aggr<-function(df,prev=T){
-  func<-ifelse(prev,"mean","sum")
-  prev.c<-apply(df,2,get(func))
-  prev.df<-data.frame(
-    Disease=names(prev.c),
-    Prevalence=prev.c,
-    stringsAsFactors = F
-  )
-  return(prev.df)
+find.cumu.mid<-function(x){
+  vec.cumu(x)-x/2
 }
 
 ##########################
@@ -201,18 +230,19 @@ cat.vis.donut.sing<-function(
   Title
 ){
   names(data)<-c("Category","Count")
-  data$Perc<-data$Count/sum(data$Count)
+  data$Perc<-data$Count/sum(data$Count)*100
+  data$cumu.mid<-find.cumu.mid(data$Perc)
   data$Category<-factor(data$Category,levels=data$Category)
-  data$label.perc<-paste(sprintf("%.1f",data$Perc*100),"%",sep="")
-  lgd.txt<-paste(data$Category,"(",data$label.perc,")",sep="")[order(data$Category)]
+  data$cnt.lab<-formatC(data$Count,big.mark = ",")
+  data$label.perc<-paste(data$cnt.lab,"(",sprintf("%.1f",data$Perc),"%)",sep="")
   
   g<-ggplot() +
-    geom_bar(data=data, mapping=aes(x=3.5,y=Perc,fill=Category),stat="identity",colour="grey30") +
-    #geom_text(data=data,mapping=aes(x=3.5,y=Perc,label=label.perc,vjust=.1))+
+    geom_bar(data=data, mapping=aes(x=3.5,y=Perc,fill=Category),stat="identity") +
+    geom_text(data=data,mapping=aes(x=3.5,y=100-cumu.mid,label=label.perc,angle=cumu.mid/100*360),col="Gray30",fontface = "bold")+
     coord_polar(theta="y") +
     xlab("")+ylab("")+ggtitle(Title)+
   xlim(c(0, 4)) +
-    scale_fill_discrete(name="",labels=lgd.txt)+
+    scale_fill_discrete(name="")+
     theme(panel.grid=element_blank(),
           axis.text=element_blank(),
           axis.ticks=element_blank(),
@@ -222,23 +252,31 @@ cat.vis.donut.sing<-function(
   return(g)
 }
 
+
+
 cat.vis.donut.comp<-function(
   data, #data.frame(Category,Count,Group)
   Title
 ){
   names(data)<-c("Category","Count","Group")
-  groupsum<-data%>%
-    group_by(Group)%>%
-    summarize(grpsum=sum(Count))
-  data<-left_join(data,groupsum)
-  data$Perc<-data$Count/data$grpsum*100
+  grplist<-unique(data$Group)
+  grpsum.list<-lapply(grplist,function(grp){
+    data.sub<-data[data$Group==grp,]
+    data.sub$Perc<-data.sub$Count/sum(data.sub$Count)*100
+    data.sub$cumu.mid<-find.cumu.mid(data.sub$Perc)
+    data.sub$Category<-as.factor(data.sub$Category)
+    data.sub$cnt.lab<-formatC(data.sub$Count,big.mark=",")
+    data.sub$label.perc<-paste(data.sub$cnt.lab,"(",sprintf("%.1f",data.sub$Perc),"%)",sep="")
+    return(data.sub)
+  })
+  data<-do.call(rbind.data.frame,grpsum.list)
+  
   data$Group<-factor(data$Group,levels=c(unique(as.character(data$Group))," ","  ","   "))
-  data$Category<-as.factor(data$Category)
-  data$label.perc<-paste(sprintf("%.1f",data$Perc),"%",sep="")
   
   g<-ggplot() +
     geom_bar(data=data, mapping=aes(x=Group,y=Perc,fill=Category),stat="identity") +
-    geom_text(mapping=aes(x=levels(data$Group),y=0,label=levels(data$Group),hjust=1))+
+    geom_text(mapping=aes(x=levels(data$Group),y=0,label=levels(data$Group)),col="Gray30",fontface = "bold")+
+    geom_text(data=data,mapping=aes(x=Group,y=100-cumu.mid,label=label.perc,angle=cumu.mid/100*360),col="Gray30",fontface = "bold")+
     coord_polar(theta="y") +
     xlab("")+ylab("")+ggtitle(Title)+
     scale_fill_discrete(name="")+
@@ -261,17 +299,17 @@ cat.vis.bar.sing<-function(
   names(data)<-c("Category","Count")
   data$Perc<-data$Count/sum(data$Count)*100
   data$Category<-factor(data$Category,levels=data$Category)
-  data$label.cnt<-formatC(data$Count,big.mark=",")
+  data$cnt.lab<-formatC(data$Count,big.mark=",")
   
-  g<-ggplot() +
-    geom_bar(data=data, mapping=aes(x=Category,y=Perc,fill=Category),width=.5,stat="identity") +
+  g<-ggplot(data=data) +
+    geom_bar(mapping=aes(x=Category,y=Perc,fill=Category),width=.5,stat="identity") +
+    geom_text(mapping=aes(x=Category,y=Perc,label=cnt.lab,col=Category),vjust=-.5)+
     xlab("")+ylab("Proportion(%)")+ggtitle(Title)+
-    scale_fill_discrete(name="")+
+    scale_fill_discrete(name="")+scale_colour_discrete(guide=F)+
     theme(legend.position = "bottom",
           axis.text.x=element_blank(),
           axis.ticks.x=element_blank(),
           axis.title = element_text(size = 12, face = "bold"),
-          #legend.text = element_text(angle=30),
           plot.title = element_text(size = 20, face = "bold",hjust = 0.5))
   return(g)
 }
@@ -281,24 +319,26 @@ cat.vis.bar.comp<-function(
   Title
 ){
   names(data)<-c("Category","Count","Group")
-  groupsum<-data%>%
-    group_by(Group)%>%
-    summarize(grpsum=sum(Count))
-  data<-left_join(data,groupsum)
-  data$Perc<-data$Count/data$grpsum*100
+  grplist<-unique(data$Group)
+  grpsum.list<-lapply(grplist,function(grp){
+    data.sub<-data[data$Group==grp,]
+    data.sub$Perc<-data.sub$Count/sum(data.sub$Count)*100
+    data.sub$Category<-as.factor(data.sub$Category)
+    data.sub$cnt.lab<-formatC(data.sub$Count,big.mark=",")
+    return(data.sub)
+  })
+  data<-do.call(rbind.data.frame,grpsum.list)
   data$Group<-as.factor(data$Group)
   data$Category<-as.factor(data$Category)
-  data$label.cnt<-formatC(data$Count,big.mark=",")
   
-  g<-ggplot() +
-    geom_bar(data=data, mapping=aes(x=Category,y=Perc,fill=Group),width=.5,stat="identity",position="dodge") +
+  g<-ggplot(data=data) +
+    geom_bar(mapping=aes(x=Category,y=Perc,fill=Group),width=.5,stat="identity",position="dodge") +
+    geom_text(mapping=aes(x=Category,y=Perc,label=cnt.lab,col=Group),vjust=-.5,position=position_dodge(width=.5))+
     xlab("")+ylab("Proportion(%)")+ggtitle(Title)+
     scale_fill_discrete(name="")+
+    scale_colour_discrete(guide = FALSE)+
     theme(legend.position = "bottom",
-          #axis.text.x=element_blank(),
-          #axis.ticks.x=element_blank(),
           axis.title = element_text(size = 12, face = "bold"),
-          #legend.text = element_text(angle=30),
           plot.title = element_text(size = 20, face = "bold",hjust = 0.5))
   return(g)
 }
@@ -319,14 +359,19 @@ Prev.vis<-function(
 
 
 Prev.vis.sing<-function(
-  prev.df,  # data.frame(Disease, Prevalence, Std)
+  prev.df,  # data.frame(Disease, Prevalence)
   Title="Disease Prevalence"
 ){
-  g<-ggplot()+
-    geom_bar(data=prev.df,mapping=aes(x=Disease,y=Prevalence),stat="identity",fill="steelblue")+
-    coord_flip()+
+  prev.df$Prevalence<-prev.df$Prevalence*100
+  prev.df$Perc.lab<-paste(sprintf("%.1f",prev.df$Prevalence),"%",sep="")
+  g<-ggplot(data=prev.df)+
+    geom_bar(mapping=aes(x=Disease,y=Prevalence),stat="identity",fill="steelblue")+
+    geom_text(mapping=aes(x=Disease,y=Prevalence,label=Perc.lab),col="steelblue",hjust=-.2,stat="identity")+
+    coord_flip()+ylim(0,105)+ylab("Prevalence(%)")+
     ggtitle(Title)+
-    theme(plot.title = element_text(size = 20, face = "bold",hjust = 0.5))
+    theme(legend.position = "bottom",
+          axis.title = element_text(size = 12, face = "bold"),
+          plot.title = element_text(size = 20, face = "bold",hjust = 0.5))
   return(g)
 }
 
@@ -338,12 +383,18 @@ Prev.vis.comp<-function(
   
   names(prev.df)<-c("Disease","Prevalence","Group")
   prev.df$Group<-as.factor(prev.df$Group)
-  g<-ggplot()+
-    geom_bar(data=prev.df,mapping=aes(x=Disease,y=Prevalence,fill=Group),position="dodge",stat="identity")+
-    #geom_errorbar(data=prev.df,mapping=aes(x=Disease,ymin=prev.min, ymax=prev.max),color="#F08080",width=.2)+
-    coord_flip()+
+  prev.df$Prevalence<-prev.df$Prevalence*100
+  prev.df$Perc.lab<-paste(sprintf("%.1f",prev.df$Prevalence),"%",sep="")
+  g<-ggplot(data=prev.df)+
+    geom_bar(mapping=aes(x=Disease,y=Prevalence,fill=Group),position="dodge",stat="identity")+
+    geom_text(mapping=aes(x=Disease,y=Prevalence,label=Perc.lab,color=Group),hjust=-.2,position=position_dodge(1),stat="identity")+
+    scale_color_discrete(guide=F)+
+    coord_flip()+ylim(0,105)+ylab("Prevalence(%)")+
     ggtitle(Title)+
-    theme(plot.title = element_text(size = 20, face = "bold",hjust = 0.5))
+    theme(legend.position = "bottom",
+          axis.title = element_text(size = 12, face = "bold"),
+          legend.title = element_blank(),
+          plot.title = element_text(size = 20, face = "bold",hjust = 0.5))
   return(g)
 }
 
