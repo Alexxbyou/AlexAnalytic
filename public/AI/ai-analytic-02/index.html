@@ -66,7 +66,9 @@
 
     <div class="article-content">
       <p>Read in data and functions</p>
-<pre class="r"><code>source(&quot;2018-02-21-ai-analytics/BDVis.R&quot;)</code></pre>
+<pre class="r"><code>library(knitr)
+library(kableExtra)
+source(&quot;2018-02-21-ai-analytics/BDVis.R&quot;)</code></pre>
 <pre><code>## Loading required package: ggplot2</code></pre>
 <pre><code>## Loading required package: dplyr</code></pre>
 <pre><code>## 
@@ -83,7 +85,8 @@
 <pre><code>## The following object is masked from &#39;package:dplyr&#39;:
 ## 
 ##     combine</code></pre>
-<pre class="r"><code>CH1.demo&lt;-readRDS(&quot;2018-02-21-ai-analytics/CH1.demo.RDS&quot;)
+<pre class="r"><code>source(&quot;2018-02-21-ai-analytics/UniVarAnal.R&quot;)
+CH1.demo&lt;-readRDS(&quot;2018-02-21-ai-analytics/CH1.demo.RDS&quot;)
 CH1.out&lt;-readRDS(&quot;2018-02-21-ai-analytics/CH1.out.RDS&quot;)
 pat.grp&lt;-CH1.out[,1:2]
 pat.grp$Death&lt;-sapply(as.character(pat.grp$Death),function(x)switch(x,&quot;0&quot;=&quot;Alive&quot;,&quot;1&quot;=&quot;Death&quot;))
@@ -93,28 +96,32 @@ CH1.demo&lt;-left_join(CH1.demo,pat.grp)</code></pre>
 <p>Visualization code</p>
 <pre class="r"><code>#Age distribution
 vis.age&lt;-age.vis(CH1.demo[,getcolumn(&quot;age|group&quot;,CH1.demo)])
-
+tab.age&lt;-coef.temp.func(CH1.demo,&quot;age|group&quot;)
 
 #Gender distribution
 cat.df&lt;-col.aggr(&quot;gender|group&quot;,CH1.demo)
 vis.gender&lt;-cat.vis(cat.df,Title=&quot;Gender&quot;)
+tab.gender&lt;-coef.temp.func(CH1.demo,&quot;gender|group&quot;)
 
 
 #Race distribution
 cat.df&lt;-col.aggr(&quot;Race|group&quot;,CH1.demo)
 vis.race&lt;-cat.vis(cat.df,Title=&quot;Ethnicity&quot;)
+tab.race&lt;-coef.temp.func(CH1.demo,&quot;race|group&quot;)
 
 
 #Marital status distribution
 cat.df&lt;-col.aggr(&quot;marital|group&quot;,CH1.demo)
 cat.df[c(1,6),1]&lt;-&quot;Devorced&quot;
 vis.marital&lt;-cat.vis(cat.df,Title=&quot;Marital Status&quot;)
+tab.marital&lt;-coef.temp.func(CH1.demo,&quot;marital|group&quot;)
 
 
 #Medifund distribution
 cat.df&lt;-col.aggr(&quot;mediFundHx|group&quot;,CH1.demo)
 cat.df[,1]&lt;-rep(c(&quot;No&quot;,&quot;Yes&quot;),2)
 vis.medifund&lt;-cat.vis(cat.df,Title=&quot;MediFund&quot;)
+tab.mediFundHx&lt;-coef.temp.func(CH1.demo,&quot;mediFundHx|group&quot;)
 
 
 
@@ -122,11 +129,13 @@ vis.medifund&lt;-cat.vis(cat.df,Title=&quot;MediFund&quot;)
 cat.df&lt;-col.aggr(&quot;Diabetes_year|group&quot;,CH1.demo)
 cat.df$Diabetes_year&lt;-factor(cat.df$Diabetes_year,levels=cat.df[c(1,3:5,2),1])
 vis.diab.yr&lt;-cat.vis(cat.df,Title=&quot;Diabetes Year&quot;)
+tab.diab.yr&lt;-coef.temp.func(CH1.demo,&quot;Diabetes_year|group&quot;)
 
 
 #Patient type distribution
 cat.df&lt;-col.aggr(&quot;PAT_TYPE|group&quot;,CH1.demo)
 vis.pat_type&lt;-cat.vis(cat.df,Title=&quot;Patient type&quot;)
+tab.pat_type&lt;-coef.temp.func(CH1.demo,&quot;PAT_TYPE|group&quot;)
 
 
 
@@ -139,29 +148,551 @@ vis.prev&lt;-Prev.vis(prev.df)</code></pre>
 <div id="individual-visualization" class="section level2">
 <h2>Individual Visualization</h2>
 <p>Age distribution</p>
-<pre class="r"><code>vis.age</code></pre>
-<p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>Gender distribution</p>
-<pre class="r"><code>vis.gender</code></pre>
-<p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>Race distribution</p>
-<pre class="r"><code>vis.race</code></pre>
-<p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>Marital status distribution</p>
-<pre class="r"><code>vis.marital</code></pre>
-<p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p>Medifund distribution</p>
-<pre class="r"><code>vis.medifund</code></pre>
-<p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>Diabetes year distribution</p>
-<pre class="r"><code>vis.diab.yr</code></pre>
-<p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<p>Patient type distribution</p>
-<pre class="r"><code>vis.pat_type</code></pre>
-<p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<p>Disease Prevalence</p>
-<pre class="r"><code>vis.prev</code></pre>
-<p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:right;">
+OddsRatio
+</th>
+<th style="text-align:right;">
+Low95
+</th>
+<th style="text-align:right;">
+Up95
+</th>
+<th style="text-align:right;">
+Pvalue
+</th>
+<th style="text-align:left;">
+Sig
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+AGE
+</td>
+<td style="text-align:right;">
+1.085918
+</td>
+<td style="text-align:right;">
+1.082565
+</td>
+<td style="text-align:right;">
+1.089281
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+***
+</td>
+</tr>
+</tbody>
+</table>
+Gender distribution <img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:right;">
+OddsRatio
+</th>
+<th style="text-align:right;">
+Low95
+</th>
+<th style="text-align:right;">
+Up95
+</th>
+<th style="text-align:right;">
+Pvalue
+</th>
+<th style="text-align:left;">
+Sig
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GENDERMale
+</td>
+<td style="text-align:right;">
+1.218973
+</td>
+<td style="text-align:right;">
+1.140773
+</td>
+<td style="text-align:right;">
+1.302533
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+***
+</td>
+</tr>
+</tbody>
+</table>
+Race distribution <img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:right;">
+OddsRatio
+</th>
+<th style="text-align:right;">
+Low95
+</th>
+<th style="text-align:right;">
+Up95
+</th>
+<th style="text-align:right;">
+Pvalue
+</th>
+<th style="text-align:left;">
+Sig
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+RACEIndian
+</td>
+<td style="text-align:right;">
+0.7163911
+</td>
+<td style="text-align:right;">
+0.6399651
+</td>
+<td style="text-align:right;">
+0.8019441
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RACEMalay
+</td>
+<td style="text-align:right;">
+1.0103816
+</td>
+<td style="text-align:right;">
+0.9176043
+</td>
+<td style="text-align:right;">
+1.1125393
+</td>
+<td style="text-align:right;">
+0.8335378
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RACEOthers
+</td>
+<td style="text-align:right;">
+0.9174235
+</td>
+<td style="text-align:right;">
+0.7749848
+</td>
+<td style="text-align:right;">
+1.0860418
+</td>
+<td style="text-align:right;">
+0.3167493
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+</tbody>
+</table>
+Marital status distribution <img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:right;">
+OddsRatio
+</th>
+<th style="text-align:right;">
+Low95
+</th>
+<th style="text-align:right;">
+Up95
+</th>
+<th style="text-align:right;">
+Pvalue
+</th>
+<th style="text-align:left;">
+Sig
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+MARITAL_STATUSMarried
+</td>
+<td style="text-align:right;">
+1.1781345
+</td>
+<td style="text-align:right;">
+0.6797248
+</td>
+<td style="text-align:right;">
+2.042004
+</td>
+<td style="text-align:right;">
+0.5590960
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MARITAL_STATUSSingle
+</td>
+<td style="text-align:right;">
+0.6212977
+</td>
+<td style="text-align:right;">
+0.3468801
+</td>
+<td style="text-align:right;">
+1.112807
+</td>
+<td style="text-align:right;">
+0.1094825
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MARITAL_STATUSUnknown
+</td>
+<td style="text-align:right;">
+2.9808840
+</td>
+<td style="text-align:right;">
+1.7201387
+</td>
+<td style="text-align:right;">
+5.165670
+</td>
+<td style="text-align:right;">
+0.0000988
+</td>
+<td style="text-align:left;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MARITAL_STATUSWidowed
+</td>
+<td style="text-align:right;">
+2.3234323
+</td>
+<td style="text-align:right;">
+1.1612038
+</td>
+<td style="text-align:right;">
+4.648915
+</td>
+<td style="text-align:right;">
+0.0172046
+</td>
+<td style="text-align:left;">
+<ul>
+<li></td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+Medifund distribution <img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:right;">
+OddsRatio
+</th>
+<th style="text-align:right;">
+Low95
+</th>
+<th style="text-align:right;">
+Up95
+</th>
+<th style="text-align:right;">
+Pvalue
+</th>
+<th style="text-align:left;">
+Sig
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+MARITAL_STATUSMarried
+</td>
+<td style="text-align:right;">
+1.1781345
+</td>
+<td style="text-align:right;">
+0.6797248
+</td>
+<td style="text-align:right;">
+2.042004
+</td>
+<td style="text-align:right;">
+0.5590960
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MARITAL_STATUSSingle
+</td>
+<td style="text-align:right;">
+0.6212977
+</td>
+<td style="text-align:right;">
+0.3468801
+</td>
+<td style="text-align:right;">
+1.112807
+</td>
+<td style="text-align:right;">
+0.1094825
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MARITAL_STATUSUnknown
+</td>
+<td style="text-align:right;">
+2.9808840
+</td>
+<td style="text-align:right;">
+1.7201387
+</td>
+<td style="text-align:right;">
+5.165670
+</td>
+<td style="text-align:right;">
+0.0000988
+</td>
+<td style="text-align:left;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MARITAL_STATUSWidowed
+</td>
+<td style="text-align:right;">
+2.3234323
+</td>
+<td style="text-align:right;">
+1.1612038
+</td>
+<td style="text-align:right;">
+4.648915
+</td>
+<td style="text-align:right;">
+0.0172046
+</td>
+<td style="text-align:left;">
+<ul>
+<li></td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+Diabetes year distribution <img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-8-1.png" width="672" />
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:right;">
+OddsRatio
+</th>
+<th style="text-align:right;">
+Low95
+</th>
+<th style="text-align:right;">
+Up95
+</th>
+<th style="text-align:right;">
+Pvalue
+</th>
+<th style="text-align:left;">
+Sig
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Diabetes_year&gt;10
+</td>
+<td style="text-align:right;">
+1.9639458
+</td>
+<td style="text-align:right;">
+1.7570902
+</td>
+<td style="text-align:right;">
+2.195154
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Diabetes_year1 to 2
+</td>
+<td style="text-align:right;">
+0.9551889
+</td>
+<td style="text-align:right;">
+0.8025848
+</td>
+<td style="text-align:right;">
+1.136809
+</td>
+<td style="text-align:right;">
+0.6057102
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Diabetes_year2 to 5
+</td>
+<td style="text-align:right;">
+1.1300031
+</td>
+<td style="text-align:right;">
+0.9992012
+</td>
+<td style="text-align:right;">
+1.277928
+</td>
+<td style="text-align:right;">
+0.0515069
+</td>
+<td style="text-align:left;">
+.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Diabetes_year5 to 10
+</td>
+<td style="text-align:right;">
+1.6462512
+</td>
+<td style="text-align:right;">
+1.4797368
+</td>
+<td style="text-align:right;">
+1.831503
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+***
+</td>
+</tr>
+</tbody>
+</table>
+Patient type distribution <img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:right;">
+OddsRatio
+</th>
+<th style="text-align:right;">
+Low95
+</th>
+<th style="text-align:right;">
+Up95
+</th>
+<th style="text-align:right;">
+Pvalue
+</th>
+<th style="text-align:left;">
+Sig
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+PAT_TYPETTSH
+</td>
+<td style="text-align:right;">
+2.289042
+</td>
+<td style="text-align:right;">
+2.141541
+</td>
+<td style="text-align:right;">
+2.446702
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+***
+</td>
+</tr>
+</tbody>
+</table>
+<p>Disease Prevalence <img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 </div>
 <div id="dashboard" class="section level2">
 <h2>Dashboard</h2>
@@ -172,9 +703,7 @@ vis.prev&lt;-Prev.vis(prev.df)</code></pre>
 <p>Disease related history</p>
 <pre class="r"><code>grid.arrange(vis.diab.yr,vis.medifund,vis.pat_type,layout_matrix=matrix(c(1,1,2,3),2,2,byrow=T))</code></pre>
 <p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-12-1.png" width="960" /></p>
-<p>Disease prevalence</p>
-<pre class="r"><code>vis.prev</code></pre>
-<p><img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Disease prevalence <img src="/AI/2018-02-21-ai-analytic-02_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 </div>
 </div>
 

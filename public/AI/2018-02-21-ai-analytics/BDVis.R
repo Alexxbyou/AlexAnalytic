@@ -1,8 +1,33 @@
 ##########################################################################
 ##########################################################################
 
-# Customize ggplot2
-
+# Title: AI Analysis - Visualization
+# Description: Univariate visualization & Comparison
+## Functions ===
+##	col.aggr	45
+##	getcolumn	50
+##	cols.aggr	56
+##	cols.aggr.sing	74
+##	df.sort	88
+##	lvl.sort	93
+##	vec.cumu	108
+##	find.cumu.mid	112
+##	cutoff2label	120
+##	elderly.group	129
+##	age.vis	140
+##	age.vis.sing	154
+##	age.vis.comp	184
+##	cat.vis	226
+##	cat.vis.sing	237
+##	cat.vis.comp	245
+##	cat.vis.donut.sing	253
+##	cat.vis.donut.comp	282
+##	cat.vis.bar.sing	320
+##	cat.vis.bar.comp	342
+##	Prev.vis	374
+##	Prev.vis.sing	386
+##	Prev.vis.comp	404
+## ===
 ##########################################################################
 ##########################################################################
 
@@ -241,7 +266,7 @@ cat.vis.donut.sing<-function(
     geom_text(data=data,mapping=aes(x=3.5,y=100-cumu.mid,label=label.perc,angle=cumu.mid/100*360),col="Gray30",fontface = "bold")+
     coord_polar(theta="y") +
     xlab("")+ylab("")+ggtitle(Title)+
-  xlim(c(0, 4)) +
+    xlim(c(0, 4)) +
     scale_fill_discrete(name="")+
     theme(panel.grid=element_blank(),
           axis.text=element_blank(),

@@ -83,44 +83,45 @@ vis.prev<-Prev.vis(prev.df)
 ## Individual Visualization
 
 Age distribution
-```{r}
+```{r,echo = FALSE}
 vis.age
+
 ```
 
 Gender distribution
-```{r}
+```{r,echo = FALSE}
 vis.gender
 ```
 
 Race distribution
-```{r}
+```{r,echo = FALSE}
 vis.race
 ```
 
 Marital status distribution
-```{r}
+```{r,echo = FALSE}
 vis.marital
 ```
 
 Medifund distribution
-```{r}
+```{r,echo = FALSE}
 vis.medifund
 ```
 
 
 Diabetes year distribution
-```{r}
+```{r,echo = FALSE}
 vis.diab.yr
 ```
 
 Patient type distribution
-```{r}
+```{r,echo = FALSE}
 vis.pat_type
 ```
 
 
 Disease Prevalence
-```{R}
+```{r,echo = FALSE}
 vis.prev
 ```
 

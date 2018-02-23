@@ -11,3 +11,10 @@ file.copy(
   "content/AI/2018-02-21-ai-analytics/BDVis.R",
   overwrite = T
 )
+
+file.copy(
+  "D:/bdtest/AIwR/UniVarAnal.R",
+  "content/AI/2018-02-21-ai-analytics/UniVarAnal.R",
+  overwrite = T
+)
+

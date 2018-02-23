@@ -18,7 +18,7 @@
       
       <guid>/ai/ai-analytic-02/</guid>
       <description>Read in data and functions
-source(&amp;quot;2018-02-21-ai-analytics/BDVis.R&amp;quot;)## Loading required package: ggplot2## Loading required package: dplyr## ## Attaching package: &amp;#39;dplyr&amp;#39;## The following objects are masked from &amp;#39;package:stats&amp;#39;:## ## filter, lag## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## intersect, setdiff, setequal, union## Loading required package: gridExtra## ## Attaching package: &amp;#39;gridExtra&amp;#39;## The following object is masked from &amp;#39;package:dplyr&amp;#39;:## ## combineCH1.demo&amp;lt;-readRDS(&amp;quot;2018-02-21-ai-analytics/CH1.demo.RDS&amp;quot;)CH1.out&amp;lt;-readRDS(&amp;quot;2018-02-21-ai-analytics/CH1.out.RDS&amp;quot;)pat.</description>
+library(knitr)library(kableExtra)source(&amp;quot;2018-02-21-ai-analytics/BDVis.R&amp;quot;)## Loading required package: ggplot2## Loading required package: dplyr## ## Attaching package: &amp;#39;dplyr&amp;#39;## The following objects are masked from &amp;#39;package:stats&amp;#39;:## ## filter, lag## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## intersect, setdiff, setequal, union## Loading required package: gridExtra## ## Attaching package: &amp;#39;gridExtra&amp;#39;## The following object is masked from &amp;#39;package:dplyr&amp;#39;:## ## combinesource(&amp;quot;2018-02-21-ai-analytics/UniVarAnal.</description>
     </item>
     
     <item>
