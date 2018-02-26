@@ -6,10 +6,20 @@
     <description>Recent content in Ai on A Hugo website</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 21 Feb 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 26 Feb 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/ai/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>AI Analytics 3 - Risk Prediction</title>
+      <link>/ai/ai-analytic-03/</link>
+      <pubDate>Mon, 26 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/ai/ai-analytic-03/</guid>
+      <description>Read in data and functions
+library(knitr)library(kableExtra)source(&amp;quot;2018-02-21-ai-analytics/BDVis.R&amp;quot;)## Loading required package: ggplot2## Loading required package: dplyr## ## Attaching package: &amp;#39;dplyr&amp;#39;## The following objects are masked from &amp;#39;package:stats&amp;#39;:## ## filter, lag## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## intersect, setdiff, setequal, union## Loading required package: gridExtra## ## Attaching package: &amp;#39;gridExtra&amp;#39;## The following object is masked from &amp;#39;package:dplyr&amp;#39;:## ## combinesource(&amp;quot;2018-02-21-ai-analytics/UniVarAnal.</description>
+    </item>
     
     <item>
       <title>AI Analytics 1 - Overview of Dataset</title>

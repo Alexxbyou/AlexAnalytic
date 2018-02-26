@@ -18,3 +18,8 @@ file.copy(
   overwrite = T
 )
 
+file.copy(
+  "D:/bdtest/AIwR/RiskPrediction.R",
+  "content/AI/2018-02-21-ai-analytics/RiskPrediction.R",
+  overwrite = T
+)

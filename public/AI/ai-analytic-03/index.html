@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.32.4" />
+
+
+<title>AI Analytics 3 - Risk Prediction - A Hugo website</title>
+<meta property="og:title" content="AI Analytics 3 - Risk Prediction - A Hugo website">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdn.bootcss.com/highlight.js/9.11.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/rstudio/blogdown">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/rstudio">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+
+    <h1 class="article-title">AI Analytics 3 - Risk Prediction</h1>
+
+    
+
+    <div class="article-content">
+      <p>Read in data and functions</p>
+<pre class="r"><code>library(knitr)
+library(kableExtra)
+source(&quot;2018-02-21-ai-analytics/BDVis.R&quot;)</code></pre>
+<pre><code>## Loading required package: ggplot2</code></pre>
+<pre><code>## Loading required package: dplyr</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre><code>## Loading required package: gridExtra</code></pre>
+<pre><code>## 
+## Attaching package: &#39;gridExtra&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     combine</code></pre>
+<pre class="r"><code>source(&quot;2018-02-21-ai-analytics/UniVarAnal.R&quot;)
+source(&quot;2018-02-21-ai-analytics/RiskPrediction.R&quot;)
+demo.proc&lt;-readRDS(&quot;2018-02-21-ai-analytics/demo.proc.RDS&quot;)
+demo.proc$AGE&lt;-as.integer(as.character(demo.proc$AGE))
+demo.proc$GENDER&lt;-factor(demo.proc$GENDER,levels=c(&quot;Female&quot;,&quot;Male&quot;))
+demo.proc$RACE&lt;-factor(demo.proc$RACE,levels=c(&quot;Others&quot;,&quot;Chinese&quot;,&quot;Malay&quot;,&quot;Indian&quot;))
+
+
+mdl.data&lt;-demo.proc[,c(1,3:8,21,9:20,22,26:27,29,23:25)]
+
+
+# model structure: 1.variable rename, 2. variable grouping
+mdl.strct&lt;-data.frame(
+  Variable=names(mdl.data),
+  rename=c(&quot;Death&quot;,&quot;Age&quot;,&quot;Gender&quot;,&quot;Race&quot;,&quot;Marital&quot;,&quot;MediFund&quot;,&quot;DiabetesYear&quot;,&quot;PatType&quot;,names(mdl.data)[9:18],&quot;MajorAmputation&quot;,&quot;MinorAmputation&quot;,&quot;BMI&quot;,names(mdl.data)[22:27]),
+  VarGrp=c(&quot;Outcome&quot;,rep(&quot;Demographics&quot;,4),rep(&quot;Medical History&quot;,3),rep(&quot;Comorbidity &amp; Complication&quot;,12),rep(&quot;Physiological Measure&quot;,4),rep(&quot;Score&quot;,3)),
+  stringsAsFactors=F
+)
+
+mdl.strct&lt;-cbind(mdl.strct,getClassRef(mdl.data))
+
+names(mdl.data)&lt;-mdl.strct$rename
+
+names(mdl.data)&lt;-mdl.strct$rename
+mdl.glm&lt;-log.reg(mdl.data)
+coef.proc.df&lt;-coef.proc(summary(mdl.glm)$coef)
+coef.proc.df&lt;-coef.intpt(coef.proc.df,mdl.data,mdl.strct)</code></pre>
+<pre class="r"><code>coef.df.to.kable(coef.proc.df)</code></pre>
+<pre><code>## Setting cell_spec format as html</code></pre>
+<table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;color: white;background-color: #1E90FF;">
+Variable
+</th>
+<th style="text-align:right;color: white;background-color: #1E90FF;">
+OddsRatio
+</th>
+<th style="text-align:right;color: white;background-color: #1E90FF;">
+Low95
+</th>
+<th style="text-align:right;color: white;background-color: #1E90FF;">
+Up95
+</th>
+<th style="text-align:right;color: white;background-color: #1E90FF;">
+Pvalue
+</th>
+<th style="text-align:right;color: white;background-color: #1E90FF;">
+Sig
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;color: #1E90FF;">
+<span style=" font-weight: bold;    ">Age</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.06
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.06
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.07
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr grouplength="1">
+<td colspan="6" style="border-bottom: 1px solid;">
+<strong>Gender</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">Male</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.48
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.37
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.59
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr grouplength="3">
+<td colspan="6" style="border-bottom: 1px solid;">
+<strong>Race</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left: 2em;" indentlevel="1">
+<span style="     ">Chinese</span>
+</td>
+<td style="text-align:right;">
+0.92
+</td>
+<td style="text-align:right;">
+0.77
+</td>
+<td style="text-align:right;">
+1.10
+</td>
+<td style="text-align:right;">
+0.3665
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">Malay</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.34
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.10
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.64
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0034
+</td>
+<td style="text-align:right;color: #1E90FF;">
+**
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left: 2em;" indentlevel="1">
+<span style="     ">Indian</span>
+</td>
+<td style="text-align:right;">
+0.92
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+1.13
+</td>
+<td style="text-align:right;">
+0.4065
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr grouplength="4">
+<td colspan="6" style="border-bottom: 1px solid;">
+<strong>Marital</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">Single</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.47
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.38
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.58
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left: 2em;" indentlevel="1">
+<span style="     ">Divorced/Separated</span>
+</td>
+<td style="text-align:right;">
+0.61
+</td>
+<td style="text-align:right;">
+0.35
+</td>
+<td style="text-align:right;">
+1.08
+</td>
+<td style="text-align:right;">
+0.0901
+</td>
+<td style="text-align:right;">
+.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">Widowed</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.57
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.36
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.90
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0165
+</td>
+<td style="text-align:right;color: #1E90FF;">
+<ul>
+<li></td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">Married</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.52
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.48
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.56
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF;">
+<span style=" font-weight: bold;    ">MediFund</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.38
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.25
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.54
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr grouplength="4">
+<td colspan="6" style="border-bottom: 1px solid;">
+<strong>DiabetesYear</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">&lt; 1</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.72
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.63
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.82
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">1 to 2</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.78
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.65
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.92
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0041
+</td>
+<td style="text-align:right;color: #1E90FF;">
+**
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">2 to 5</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.83
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.74
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.93
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0011
+</td>
+<td style="text-align:right;color: #1E90FF;">
+**
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left: 2em;" indentlevel="1">
+<span style="     ">5 to 10</span>
+</td>
+<td style="text-align:right;">
+0.93
+</td>
+<td style="text-align:right;">
+0.85
+</td>
+<td style="text-align:right;">
+1.02
+</td>
+<td style="text-align:right;">
+0.1362
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr grouplength="1">
+<td colspan="6" style="border-bottom: 1px solid;">
+<strong>PatType</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">TTSH</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.70
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.61
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.80
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF;">
+<span style=" font-weight: bold;    ">Dyslipidemia</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.74
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.63
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.88
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0007
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    ">Hypertension</span>
+</td>
+<td style="text-align:right;">
+1.05
+</td>
+<td style="text-align:right;">
+0.92
+</td>
+<td style="text-align:right;">
+1.20
+</td>
+<td style="text-align:right;">
+0.4852
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    ">Asthma</span>
+</td>
+<td style="text-align:right;">
+0.91
+</td>
+<td style="text-align:right;">
+0.78
+</td>
+<td style="text-align:right;">
+1.06
+</td>
+<td style="text-align:right;">
+0.2125
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF;">
+<span style=" font-weight: bold;    ">COPD</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.37
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.18
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.61
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0001
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF;">
+<span style=" font-weight: bold;    ">CKD</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.42
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.30
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.54
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF;">
+<span style=" font-weight: bold;    ">CHD</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.14
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.05
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.24
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0016
+</td>
+<td style="text-align:right;color: #1E90FF;">
+**
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF;">
+<span style=" font-weight: bold;    ">Heart_F</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.83
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.65
+</td>
+<td style="text-align:right;color: #1E90FF;">
+2.03
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF;">
+<span style=" font-weight: bold;    ">Stroke</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.52
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.40
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.65
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF;">
+<span style=" font-weight: bold;    ">Retinopathy</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.20
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.09
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.32
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0001
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF;">
+<span style=" font-weight: bold;    ">SPN</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.28
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.18
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.39
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF;">
+<span style=" font-weight: bold;    ">MajorAmputation</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.81
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.40
+</td>
+<td style="text-align:right;color: #1E90FF;">
+2.35
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    ">MinorAmputation</span>
+</td>
+<td style="text-align:right;">
+1.22
+</td>
+<td style="text-align:right;">
+0.94
+</td>
+<td style="text-align:right;">
+1.58
+</td>
+<td style="text-align:right;">
+0.1388
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr grouplength="6">
+<td colspan="6" style="border-bottom: 1px solid;">
+<strong>BMI</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left: 2em;" indentlevel="1">
+<span style="     ">Underweight</span>
+</td>
+<td style="text-align:right;">
+1.02
+</td>
+<td style="text-align:right;">
+0.84
+</td>
+<td style="text-align:right;">
+1.23
+</td>
+<td style="text-align:right;">
+0.8516
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">Normal</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.63
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.55
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.73
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">Overweight</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.54
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.47
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.61
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">Obese I</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.46
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.40
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.53
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">Obese II</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.60
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.50
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.72
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">Obese III</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.74
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.57
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.96
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0233
+</td>
+<td style="text-align:right;color: #1E90FF;">
+<ul>
+<li></td>
+</tr>
+<tr grouplength="5">
+<td colspan="6" style="border-bottom: 1px solid;">
+<strong>HbA1c</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">&lt;=5</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+2.46
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.78
+</td>
+<td style="text-align:right;color: #1E90FF;">
+3.40
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">5.1-6</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.42
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.20
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.67
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left: 2em;" indentlevel="1">
+<span style="     ">6.1-7</span>
+</td>
+<td style="text-align:right;">
+0.95
+</td>
+<td style="text-align:right;">
+0.81
+</td>
+<td style="text-align:right;">
+1.12
+</td>
+<td style="text-align:right;">
+0.5439
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left: 2em;" indentlevel="1">
+<span style="     ">7.1-8.5</span>
+</td>
+<td style="text-align:right;">
+0.87
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+1.02
+</td>
+<td style="text-align:right;">
+0.0837
+</td>
+<td style="text-align:right;">
+.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">&gt;8.6</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.22
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.03
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.45
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0200
+</td>
+<td style="text-align:right;color: #1E90FF;">
+<ul>
+<li></td>
+</tr>
+<tr grouplength="5">
+<td colspan="6" style="border-bottom: 1px solid;">
+<strong>BP</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left: 2em;" indentlevel="1">
+<span style="     ">&lt;120</span>
+</td>
+<td style="text-align:right;">
+0.86
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+1.01
+</td>
+<td style="text-align:right;">
+0.0616
+</td>
+<td style="text-align:right;">
+.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">120-139</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.53
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.47
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.61
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">140-159</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.52
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.45
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.59
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">160-179</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.60
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.52
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.70
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentlevel="1">
+<span style="     ">&gt;=180</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.61
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.52
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.73
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr grouplength="4">
+<td colspan="6" style="border-bottom: 1px solid;">
+<strong>LDL</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentLevel="1">
+<span style="     ">&lt;2.6</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.57
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.49
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.67
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentLevel="1">
+<span style="     ">2.6-3.3</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.67
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.57
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.79
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF; padding-left: 2em;" indentLevel="1">
+<span style="     ">3.4-4.0</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.67
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.55
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.82
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0001
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left: 2em;" indentLevel="1">
+<span style="     ">&gt;=4.1</span>
+</td>
+<td style="text-align:right;">
+0.98
+</td>
+<td style="text-align:right;">
+0.80
+</td>
+<td style="text-align:right;">
+1.22
+</td>
+<td style="text-align:right;">
+0.8857
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF;">
+<span style=" font-weight: bold;    ">SOC.score</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+2.78
+</td>
+<td style="text-align:right;color: #1E90FF;">
+1.85
+</td>
+<td style="text-align:right;color: #1E90FF;">
+4.16
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF;">
+<span style=" font-weight: bold;    ">Diag.score</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+6.25
+</td>
+<td style="text-align:right;color: #1E90FF;">
+4.99
+</td>
+<td style="text-align:right;color: #1E90FF;">
+7.82
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;color: #1E90FF;">
+<span style=" font-weight: bold;    ">Drug.score</span>
+</td>
+<td style="text-align:right;color: #1E90FF;">
+6.26
+</td>
+<td style="text-align:right;color: #1E90FF;">
+4.73
+</td>
+<td style="text-align:right;color: #1E90FF;">
+8.29
+</td>
+<td style="text-align:right;color: #1E90FF;">
+0.0000
+</td>
+<td style="text-align:right;color: #1E90FF;">
+***
+</td>
+</tr>
+</tbody>
+</table></li>
+</ul></li>
+</ul></li>
+</ul>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/highlight.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/languages/r.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+
