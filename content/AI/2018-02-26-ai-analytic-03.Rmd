@@ -17,46 +17,101 @@ tags:
   - visualization
 ---
 
-Read in data and functions
+### Read in data and functions
 ```{r}
-library(knitr)
-library(kableExtra)
 source("2018-02-21-ai-analytics/BDVis.R")
 source("2018-02-21-ai-analytics/UniVarAnal.R")
 source("2018-02-21-ai-analytics/RiskPrediction.R")
-demo.proc<-readRDS("2018-02-21-ai-analytics/demo.proc.RDS")
-demo.proc$AGE<-as.integer(as.character(demo.proc$AGE))
-demo.proc$GENDER<-factor(demo.proc$GENDER,levels=c("Female","Male"))
-demo.proc$RACE<-factor(demo.proc$RACE,levels=c("Others","Chinese","Malay","Indian"))
+mdl.data<-readRDS("2018-02-21-ai-analytics/mdl.data.RDS")
+mdl.strct<-readRDS("2018-02-21-ai-analytics/mdl.strct.RDS")
+#saveRDS(mdl.data,"2018-02-21-ai-analytics/mdl.data.RDS")
+#saveRDS(mdl.strct,"2018-02-21-ai-analytics/mdl.strct.RDS")
+```
 
 
-mdl.data<-demo.proc[,c(1,3:8,21,9:20,22,26:27,29,23:25)]
 
-
-# model structure: 1.variable rename, 2. variable grouping
-mdl.strct<-data.frame(
-  Variable=names(mdl.data),
-  rename=c("Death","Age","Gender","Race","Marital","MediFund","DiabetesYear","PatType",names(mdl.data)[9:18],"MajorAmputation","MinorAmputation","BMI",names(mdl.data)[22:27]),
-  VarGrp=c("Outcome",rep("Demographics",4),rep("Medical History",3),rep("Comorbidity & Complication",12),rep("Physiological Measure",4),rep("Score",3)),
-  stringsAsFactors=F
-)
-
-mdl.strct<-cbind(mdl.strct,getClassRef(mdl.data))
-
-names(mdl.data)<-mdl.strct$rename
-
-names(mdl.data)<-mdl.strct$rename
+## Regression
+```{r}
 mdl.glm<-log.reg(mdl.data)
 coef.proc.df<-coef.proc(summary(mdl.glm)$coef)
 coef.proc.df<-coef.intpt(coef.proc.df,mdl.data,mdl.strct)
+summary(mdl.glm)
 ```
 
-
-
-
+## Coefficient
+### R coefficient with knitr
 ```{r}
 coef.df.to.kable(coef.proc.df)
 ```
+
+### Visualizing coefficients
+```{r}
+reg.cat.vis("Race",coef.proc.df,trend=F)
+reg.cat.vis("Marital",coef.proc.df,trend=F)
+reg.cat.vis("DiabetesYear",coef.proc.df)
+reg.cat.vis("BMI",coef.proc.df)
+reg.cat.vis("HbA1c",coef.proc.df)
+reg.cat.vis("BP",coef.proc.df)
+reg.cat.vis("LDL",coef.proc.df)
+```
+
+
+### Parallel variable visualization
+This horizontal bar-chart is suitable for presenting the effects of a series of binomial variable
+```{R}
+para.coef.df<-coef.proc.df[coef.proc.df$VarGrp=="Comorbidity & Complication",]
+para.coef.df<-para.coef.df[rev(order(para.coef.df$Variable)),]
+reg.para.var.vis(para.coef.df,"Comorbidity & Complication")
+```
+
+
+## Model validation
+
+### Prediction score
+```{R,warnings=F}
+mdl.pred<-pred.score.fun(mdl.glm,mdl.data)
+pred.score.dist.vis(mdl.pred)
+```
+
+
+### ROC & AUC
+```{R}
+roc.vis(mdl.pred)
+```
+
+
+### Fitting performance
+```{R,fig.width=12,fit.height=6}
+perf.sum.vis(mdl.pred)
+```
+
+
+### Fitting performance
+```{R,width=10}
+threshold.sel.vis(mdl.pred)
+```
+
+
+### Lift
+How much better if using the prediction compare to pure guess
+```{R}
+perf.vis(mdl.pred,"lift")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

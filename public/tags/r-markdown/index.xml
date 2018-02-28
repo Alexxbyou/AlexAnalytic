@@ -17,8 +17,7 @@
       <pubDate>Mon, 26 Feb 2018 00:00:00 +0000</pubDate>
       
       <guid>/ai/ai-analytic-03/</guid>
-      <description>Read in data and functions
-library(knitr)library(kableExtra)source(&amp;quot;2018-02-21-ai-analytics/BDVis.R&amp;quot;)## Loading required package: ggplot2## Loading required package: dplyr## ## Attaching package: &amp;#39;dplyr&amp;#39;## The following objects are masked from &amp;#39;package:stats&amp;#39;:## ## filter, lag## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## intersect, setdiff, setequal, union## Loading required package: gridExtra## ## Attaching package: &amp;#39;gridExtra&amp;#39;## The following object is masked from &amp;#39;package:dplyr&amp;#39;:## ## combinesource(&amp;quot;2018-02-21-ai-analytics/UniVarAnal.</description>
+      <description>Read in data and functionssource(&amp;quot;2018-02-21-ai-analytics/BDVis.R&amp;quot;)## Loading required package: ggplot2## Loading required package: dplyr## ## Attaching package: &amp;#39;dplyr&amp;#39;## The following objects are masked from &amp;#39;package:stats&amp;#39;:## ## filter, lag## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## intersect, setdiff, setequal, union## Loading required package: gridExtra## ## Attaching package: &amp;#39;gridExtra&amp;#39;## The following object is masked from &amp;#39;package:dplyr&amp;#39;:## ## combinesource(&amp;quot;2018-02-21-ai-analytics/UniVarAnal.R&amp;quot;)source(&amp;quot;2018-02-21-ai-analytics/RiskPrediction.R&amp;quot;)## Loading required package: gplots## ## Attaching package: &amp;#39;gplots&amp;#39;## The following object is masked from &amp;#39;package:stats&amp;#39;:## ## lowessmdl.</description>
     </item>
     
     <item>

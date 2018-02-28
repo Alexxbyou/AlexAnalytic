@@ -65,10 +65,9 @@
     
 
     <div class="article-content">
-      <p>Read in data and functions</p>
-<pre class="r"><code>library(knitr)
-library(kableExtra)
-source(&quot;2018-02-21-ai-analytics/BDVis.R&quot;)</code></pre>
+      <div id="read-in-data-and-functions" class="section level3">
+<h3>Read in data and functions</h3>
+<pre class="r"><code>source(&quot;2018-02-21-ai-analytics/BDVis.R&quot;)</code></pre>
 <pre><code>## Loading required package: ggplot2</code></pre>
 <pre><code>## Loading required package: dplyr</code></pre>
 <pre><code>## 
@@ -86,32 +85,101 @@ source(&quot;2018-02-21-ai-analytics/BDVis.R&quot;)</code></pre>
 ## 
 ##     combine</code></pre>
 <pre class="r"><code>source(&quot;2018-02-21-ai-analytics/UniVarAnal.R&quot;)
-source(&quot;2018-02-21-ai-analytics/RiskPrediction.R&quot;)
-demo.proc&lt;-readRDS(&quot;2018-02-21-ai-analytics/demo.proc.RDS&quot;)
-demo.proc$AGE&lt;-as.integer(as.character(demo.proc$AGE))
-demo.proc$GENDER&lt;-factor(demo.proc$GENDER,levels=c(&quot;Female&quot;,&quot;Male&quot;))
-demo.proc$RACE&lt;-factor(demo.proc$RACE,levels=c(&quot;Others&quot;,&quot;Chinese&quot;,&quot;Malay&quot;,&quot;Indian&quot;))
-
-
-mdl.data&lt;-demo.proc[,c(1,3:8,21,9:20,22,26:27,29,23:25)]
-
-
-# model structure: 1.variable rename, 2. variable grouping
-mdl.strct&lt;-data.frame(
-  Variable=names(mdl.data),
-  rename=c(&quot;Death&quot;,&quot;Age&quot;,&quot;Gender&quot;,&quot;Race&quot;,&quot;Marital&quot;,&quot;MediFund&quot;,&quot;DiabetesYear&quot;,&quot;PatType&quot;,names(mdl.data)[9:18],&quot;MajorAmputation&quot;,&quot;MinorAmputation&quot;,&quot;BMI&quot;,names(mdl.data)[22:27]),
-  VarGrp=c(&quot;Outcome&quot;,rep(&quot;Demographics&quot;,4),rep(&quot;Medical History&quot;,3),rep(&quot;Comorbidity &amp; Complication&quot;,12),rep(&quot;Physiological Measure&quot;,4),rep(&quot;Score&quot;,3)),
-  stringsAsFactors=F
-)
-
-mdl.strct&lt;-cbind(mdl.strct,getClassRef(mdl.data))
-
-names(mdl.data)&lt;-mdl.strct$rename
-
-names(mdl.data)&lt;-mdl.strct$rename
-mdl.glm&lt;-log.reg(mdl.data)
+source(&quot;2018-02-21-ai-analytics/RiskPrediction.R&quot;)</code></pre>
+<pre><code>## Loading required package: gplots</code></pre>
+<pre><code>## 
+## Attaching package: &#39;gplots&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     lowess</code></pre>
+<pre class="r"><code>mdl.data&lt;-readRDS(&quot;2018-02-21-ai-analytics/mdl.data.RDS&quot;)
+mdl.strct&lt;-readRDS(&quot;2018-02-21-ai-analytics/mdl.strct.RDS&quot;)
+#saveRDS(mdl.data,&quot;2018-02-21-ai-analytics/mdl.data.RDS&quot;)
+#saveRDS(mdl.strct,&quot;2018-02-21-ai-analytics/mdl.strct.RDS&quot;)</code></pre>
+</div>
+<div id="regression" class="section level2">
+<h2>Regression</h2>
+<pre class="r"><code>mdl.glm&lt;-log.reg(mdl.data)
 coef.proc.df&lt;-coef.proc(summary(mdl.glm)$coef)
-coef.proc.df&lt;-coef.intpt(coef.proc.df,mdl.data,mdl.strct)</code></pre>
+coef.proc.df&lt;-coef.intpt(coef.proc.df,mdl.data,mdl.strct)
+summary(mdl.glm)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = fml, family = &quot;binomial&quot;, data = mdl.data)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.1495  -0.2090  -0.1356  -0.0919   3.8911  
+## 
+## Coefficients:
+##                            Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)               -7.499845   0.197961 -37.885  &lt; 2e-16 ***
+## Age                        0.060753   0.001912  31.776  &lt; 2e-16 ***
+## GenderMale                 0.389397   0.037700  10.329  &lt; 2e-16 ***
+## RaceChinese               -0.083090   0.092002  -0.903 0.366453    
+## RaceMalay                  0.296295   0.101301   2.925 0.003446 ** 
+## RaceIndian                -0.087946   0.105941  -0.830 0.406458    
+## MaritalSingle             -0.764622   0.108805  -7.027 2.10e-12 ***
+## MaritalDivorced/Separated -0.489259   0.288686  -1.695 0.090117 .  
+## MaritalWidowed            -0.564550   0.235351  -2.399 0.016451 *  
+## MaritalMarried            -0.656606   0.038800 -16.923  &lt; 2e-16 ***
+## MediFund                   0.325559   0.053808   6.050 1.44e-09 ***
+## DiabetesYear&lt; 1           -0.331230   0.068232  -4.854 1.21e-06 ***
+## DiabetesYear1 to 2        -0.253543   0.088359  -2.869 0.004112 ** 
+## DiabetesYear2 to 5        -0.189539   0.058148  -3.260 0.001116 ** 
+## DiabetesYear5 to 10       -0.068183   0.045753  -1.490 0.136164    
+## PatTypeTTSH               -0.357246   0.070490  -5.068 4.02e-07 ***
+## Dyslipidemia              -0.296954   0.087523  -3.393 0.000692 ***
+## Hypertension               0.048220   0.069086   0.698 0.485194    
+## Asthma                    -0.097114   0.077892  -1.247 0.212480    
+## COPD                       0.317611   0.079402   4.000 6.33e-05 ***
+## CKD                        0.348013   0.043813   7.943 1.97e-15 ***
+## CHD                        0.133249   0.042288   3.151 0.001627 ** 
+## Heart_F                    0.604493   0.053578  11.283  &lt; 2e-16 ***
+## Stroke                     0.419498   0.042253   9.928  &lt; 2e-16 ***
+## Retinopathy                0.185715   0.048645   3.818 0.000135 ***
+## SPN                        0.249402   0.040904   6.097 1.08e-09 ***
+## MajorAmputation            0.594562   0.132373   4.492 7.07e-06 ***
+## MinorAmputation            0.197173   0.133185   1.480 0.138753    
+## BMIUnderweight             0.018081   0.096636   0.187 0.851579    
+## BMINormal                 -0.456123   0.068973  -6.613 3.76e-11 ***
+## BMIOverweight             -0.619211   0.067112  -9.227  &lt; 2e-16 ***
+## BMIObese I                -0.778952   0.075479 -10.320  &lt; 2e-16 ***
+## BMIObese II               -0.510269   0.091876  -5.554 2.79e-08 ***
+## BMIObese III              -0.306180   0.134950  -2.269 0.023278 *  
+## HbA1c&lt;=5                   0.901372   0.164599   5.476 4.35e-08 ***
+## HbA1c5.1-6                 0.348090   0.085054   4.093 4.27e-05 ***
+## HbA1c6.1-7                -0.049170   0.081014  -0.607 0.543897    
+## HbA1c7.1-8.5              -0.143695   0.083075  -1.730 0.083684 .  
+## HbA1c&gt;8.6                  0.201121   0.086453   2.326 0.019999 *  
+## BP&lt;120                    -0.149397   0.079916  -1.869 0.061565 .  
+## BP120-139                 -0.627131   0.065447  -9.582  &lt; 2e-16 ***
+## BP140-159                 -0.663452   0.065049 -10.199  &lt; 2e-16 ***
+## BP160-179                 -0.504244   0.074414  -6.776 1.23e-11 ***
+## BP&gt;=180                   -0.486141   0.090030  -5.400 6.67e-08 ***
+## LDL&lt;2.6                   -0.559723   0.077714  -7.202 5.92e-13 ***
+## LDL2.6-3.3                -0.399521   0.084795  -4.712 2.46e-06 ***
+## LDL3.4-4.0                -0.397290   0.101162  -3.927 8.59e-05 ***
+## LDL&gt;=4.1                  -0.015463   0.107527  -0.144 0.885652    
+## SOC.score                  1.021130   0.206238   4.951 7.38e-07 ***
+## Diag.score                 1.832786   0.114531  16.002  &lt; 2e-16 ***
+## Drug.score                 1.834063   0.143322  12.797  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 33752  on 143752  degrees of freedom
+## Residual deviance: 26948  on 143702  degrees of freedom
+##   (33 observations deleted due to missingness)
+## AIC: 27050
+## 
+## Number of Fisher Scoring iterations: 7</code></pre>
+</div>
+<div id="coefficient" class="section level2">
+<h2>Coefficient</h2>
+<div id="r-coefficient-with-knitr" class="section level3">
+<h3>R coefficient with knitr</h3>
 <pre class="r"><code>coef.df.to.kable(coef.proc.df)</code></pre>
 <pre><code>## Setting cell_spec format as html</code></pre>
 <table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;">
@@ -1179,6 +1247,74 @@ Sig
 </ul></li>
 </ul></li>
 </ul>
+</div>
+<div id="visualizing-coefficients" class="section level3">
+<h3>Visualizing coefficients</h3>
+<pre class="r"><code>reg.cat.vis(&quot;Race&quot;,coef.proc.df,trend=F)</code></pre>
+<p><img src="/AI/2018-02-26-ai-analytic-03_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>reg.cat.vis(&quot;Marital&quot;,coef.proc.df,trend=F)</code></pre>
+<p><img src="/AI/2018-02-26-ai-analytic-03_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+<pre class="r"><code>reg.cat.vis(&quot;DiabetesYear&quot;,coef.proc.df)</code></pre>
+<p><img src="/AI/2018-02-26-ai-analytic-03_files/figure-html/unnamed-chunk-4-3.png" width="672" /></p>
+<pre class="r"><code>reg.cat.vis(&quot;BMI&quot;,coef.proc.df)</code></pre>
+<p><img src="/AI/2018-02-26-ai-analytic-03_files/figure-html/unnamed-chunk-4-4.png" width="672" /></p>
+<pre class="r"><code>reg.cat.vis(&quot;HbA1c&quot;,coef.proc.df)</code></pre>
+<p><img src="/AI/2018-02-26-ai-analytic-03_files/figure-html/unnamed-chunk-4-5.png" width="672" /></p>
+<pre class="r"><code>reg.cat.vis(&quot;BP&quot;,coef.proc.df)</code></pre>
+<p><img src="/AI/2018-02-26-ai-analytic-03_files/figure-html/unnamed-chunk-4-6.png" width="672" /></p>
+<pre class="r"><code>reg.cat.vis(&quot;LDL&quot;,coef.proc.df)</code></pre>
+<p><img src="/AI/2018-02-26-ai-analytic-03_files/figure-html/unnamed-chunk-4-7.png" width="672" /></p>
+</div>
+<div id="parallel-variable-visualization" class="section level3">
+<h3>Parallel variable visualization</h3>
+<p>This horizontal bar-chart is suitable for presenting the effects of a series of binomial variable</p>
+<pre class="r"><code>para.coef.df&lt;-coef.proc.df[coef.proc.df$VarGrp==&quot;Comorbidity &amp; Complication&quot;,]
+para.coef.df&lt;-para.coef.df[rev(order(para.coef.df$Variable)),]
+reg.para.var.vis(para.coef.df,&quot;Comorbidity &amp; Complication&quot;)</code></pre>
+<p><img src="/AI/2018-02-26-ai-analytic-03_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+</div>
+<div id="model-validation" class="section level2">
+<h2>Model validation</h2>
+<div id="prediction-score" class="section level3">
+<h3>Prediction score</h3>
+<pre class="r"><code>mdl.pred&lt;-pred.score.fun(mdl.glm,mdl.data)
+pred.score.dist.vis(mdl.pred)</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<pre><code>## Warning: Removed 33 rows containing non-finite values (stat_bin).</code></pre>
+<pre><code>## Warning: Removed 33 rows containing non-finite values (stat_density).</code></pre>
+<p><img src="/AI/2018-02-26-ai-analytic-03_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="roc-auc" class="section level3">
+<h3>ROC &amp; AUC</h3>
+<pre class="r"><code>roc.vis(mdl.pred)</code></pre>
+<p><img src="/AI/2018-02-26-ai-analytic-03_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="fitting-performance" class="section level3">
+<h3>Fitting performance</h3>
+<pre class="r"><code>perf.sum.vis(mdl.pred)</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_path).
+
+## Warning: Removed 1 rows containing missing values (geom_path).</code></pre>
+<p><img src="/AI/2018-02-26-ai-analytic-03_files/figure-html/unnamed-chunk-8-1.png" width="1152" /></p>
+</div>
+<div id="fitting-performance-1" class="section level3">
+<h3>Fitting performance</h3>
+<pre class="r"><code>threshold.sel.vis(mdl.pred)</code></pre>
+<pre><code>## Warning: Removed 2 rows containing missing values (geom_path).
+
+## Warning: Removed 2 rows containing missing values (geom_path).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_path).</code></pre>
+<p><img src="/AI/2018-02-26-ai-analytic-03_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="lift" class="section level3">
+<h3>Lift</h3>
+<p>How much better if using the prediction compare to pure guess</p>
+<pre class="r"><code>perf.vis(mdl.pred,&quot;lift&quot;)</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_path).</code></pre>
+<p><img src="/AI/2018-02-26-ai-analytic-03_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
+</div>
 
     </div>
   </article>
