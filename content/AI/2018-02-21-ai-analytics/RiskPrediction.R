@@ -49,6 +49,8 @@ measure.lkup<-data.frame(
   stringsAsFactors = F
 )
 
+wm<-geom_text(aes(x=Inf, y=Inf, label="HSOR@NHG"),hjust=1,vjust=1,colour="white",size=10)
+wm.fl<-geom_text(aes(x=-Inf, y=Inf, label="HSOR@NHG"),hjust=1,vjust=-.3,colour="white",size=10)
 
 
 ####################################################
@@ -207,7 +209,7 @@ reg.cat.vis<-function(var,coef.proc.df,trend=T){
     geom_bar(stat="identity",color="gray",width =.4,alpha=.8,fill="dodgerblue4")+
     geom_errorbar(aes(ymin=Low95, ymax=Up95),size=.5,colour="deeppink",width=.2)+
     geom_line(aes(x=1:nrow(coef.df),y=OddsRatio),colour="deeppink")+
-    xlab(var)+ylab("Odds Ratio")+ggtitle(var)+
+    xlab(var)+ylab("Odds Ratio")+ggtitle(var)+wm+
     theme(legend.position = "bottom",
           axis.ticks.x=element_blank(),
           axis.title = element_text(size = 12, face = "bold"),
@@ -221,7 +223,7 @@ reg.age.vis<-function(age.effect){
   names(age.effect)<-c("Age","Coefficient")
   coef.min<-min(predict(loess(Coefficient~Age,df,span = .9), age.effect$Age))
   df$Coefficient<-df$Coefficient-coef.min
-  gg<-ggplot(df,aes(x=Age,y=Coefficient))+geom_point()+stat_smooth(span = 0.9)
+  gg<-ggplot(df,aes(x=Age,y=Coefficient))+geom_point()+stat_smooth(span = 0.9)+wm
   return(gg)
 }
 
@@ -238,7 +240,7 @@ reg.para.var.vis<-function(coef.df,title){
     geom_point(aes(x=Variable,y=OddsRatio),size=1,colour="deeppink")+
     geom_errorbar(aes(x=Variable,ymin=Low95, ymax=Up95),size=.6,colour="deeppink",width=.4)+
     coord_flip()+ylab("Odds Ratio")+geom_hline(yintercept = 1,size=.8,color="Gray30")+
-    ggtitle(title)+xlab("")+
+    ggtitle(title)+xlab("")+wm.fl+
     theme(legend.position = "bottom",
           axis.ticks=element_blank(),
           axis.title = element_text(size = 12, face = "bold"),
@@ -284,7 +286,7 @@ pred.score.fun<-function(mdl.glm,mdl.data){
 pred.score.dist.vis<-function(mdl.pred){
   gg<-ggplot(mdl.pred, aes(x=pred.scale, color=outcome, fill=outcome)) + 
     geom_histogram(aes(y=..density..), alpha=0.5,position="identity")+
-    geom_density(alpha=.2)+xlim(0,1)+
+    geom_density(alpha=.2)+xlim(0,1)+wm+
     labs(title="Predition score by outcome",x="Scaled prediction",y="Density",
          caption = "*The higher segregated the distributions, the better the predictability")+
     theme(legend.position = "bottom",
@@ -310,7 +312,7 @@ roc.vis<-function(mdl.pred){
     geom_text(aes(x=.5,y=.5,label=auc.text),colour="#EE3A8C",angle=45,vjust=-.5,hjust=.5)+
     labs(title= "ROC curve", 
          x = "False Positive Rate (1-Specificity)", 
-         y = "True Positive Rate (Sensitivity)")+coord_equal()+
+         y = "True Positive Rate (Sensitivity)")+coord_equal()+wm.fl+
     theme(legend.position = "bottom",
           axis.ticks=element_blank(),
           axis.title = element_text(size = 12, face = "bold"),
@@ -348,6 +350,7 @@ perf.vis<-function(mdl.pred,measure){
 perf.sum.vis<-function(mdl.pred){
   cd<-measure.lkup$code[1:8]
   glist<-lapply(cd,function(x)perf.vis(mdl.pred,x))
+  glist[[8]]<-glist[[8]]+wm
   names(glist)<-cd
   grid.arrange(arrangeGrob(grobs=glist,nrow=2,ncol=4,width=1300))
 }
@@ -357,6 +360,7 @@ perf.sum.vis<-function(mdl.pred){
 threshold.sel.vis<-function(mdl.pred){
   cd<-measure.lkup$code[9:11]
   glist<-lapply(cd,function(x)perf.vis(mdl.pred,x))
+  glist[[3]]<-glist[[3]]+wm
   names(glist)<-cd
   grid.arrange(arrangeGrob(grobs=glist,nrow=1,ncol=3))
 }

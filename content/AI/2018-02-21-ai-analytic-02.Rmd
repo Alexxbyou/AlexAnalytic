@@ -1,5 +1,5 @@
 ---
-title: "AI Analytics 2 - Data Comparison"
+title: "AI Analytics 2 - Data Comparison by Outcome"
 author: Alex
 date: '2018-02-21'
 slug: ai-analytic-02
@@ -19,6 +19,7 @@ tags:
 
 Read in data and functions
 ```{r}
+library(grid)
 library(knitr)
 library(kableExtra)
 source("2018-02-21-ai-analytics/BDVis.R")
@@ -32,11 +33,20 @@ CH1.demo<-left_join(CH1.demo,pat.grp)
 ```
 
 
+## Initial slides for auto-generation
+```{r,echo = FALSE}
+require("ReporteRs")
+mysld<-pptx("Data Comparison by Outcome","2018-02-21-ai-analytics/template.pptx")%>%
+  addSlide("Title Slide")%>%
+  addTitle("Data Comparison by Outcome")
+```
+
 Visualization code
 ```{r}
 #Age distribution
 vis.age<-age.vis(CH1.demo[,getcolumn("age|group",CH1.demo)])
 tab.age<-coef.temp.func(CH1.demo,"age|group")
+
 
 #Gender distribution
 cat.df<-col.aggr("gender|group",CH1.demo)
@@ -61,7 +71,7 @@ tab.marital<-coef.temp.func(CH1.demo,"marital|group")
 cat.df<-col.aggr("mediFundHx|group",CH1.demo)
 cat.df[,1]<-rep(c("No","Yes"),2)
 vis.medifund<-cat.vis(cat.df,Title="MediFund")
-tab.mediFundHx<-coef.temp.func(CH1.demo,"mediFundHx|group")
+tab.medifund<-coef.temp.func(CH1.demo,"mediFundHx|group")
 
 
 
@@ -92,44 +102,44 @@ Age distribution
 
 ```{r,echo = FALSE, results = 'asis'}
 vis.age
-tab.age
+tab.age%>%kable("html")%>%kable_styling("striped", full_width = F)
 ```
 
 Gender distribution
 ```{r,echo = FALSE}
 vis.gender
-tab.gender
+tab.gender%>%kable("html")%>%kable_styling("striped", full_width = F)
 ```
 
 Race distribution
 ```{r,echo = FALSE}
 vis.race
-tab.race
+tab.race%>%kable("html")%>%kable_styling("striped", full_width = F)
 ```
 
 Marital status distribution
 ```{r,echo = FALSE}
 vis.marital
-tab.marital
+tab.marital%>%kable("html")%>%kable_styling("striped", full_width = F)
 ```
 
 Medifund distribution
 ```{r,echo = FALSE}
 vis.medifund
-tab.marital
+tab.marital%>%kable("html")%>%kable_styling("striped", full_width = F)
 ```
 
 
 Diabetes year distribution
 ```{r,echo = FALSE}
 vis.diab.yr
-tab.diab.yr
+tab.diab.yr%>%kable("html")%>%kable_styling("striped", full_width = F)
 ```
 
 Patient type distribution
 ```{r,echo = FALSE}
 vis.pat_type
-tab.pat_type
+tab.pat_type%>%kable("html")%>%kable_styling("striped", full_width = F)
 ```
 
 Disease Prevalence
@@ -139,8 +149,8 @@ vis.prev
 
 ## Dashboard
 ### Demographic
-```{r,fig.asp = 1.2,fig.width=10}
-grid.arrange(vis.age,vis.gender,vis.race,vis.marital,layout_matrix=matrix(1:4,2,2,byrow=T))
+```{r,fig.asp = .85,fig.width=10}
+grid.arrange(vis.age,vis.gender,vis.race,vis.marital,layout_matrix=matrix(c(1,1,1,1,2,2,3,3,3,4,4,4),2,6,byrow=T))
 ```
 
 
@@ -153,4 +163,62 @@ grid.arrange(vis.diab.yr,vis.medifund,vis.pat_type,layout_matrix=matrix(c(1,1,2,
 Disease prevalence
 ```{r,echo = FALSE}
 vis.prev
+```
+
+
+```{r,echo = FALSE}
+mysld<-mysld%>%
+  # Age
+  addSlide("Title and Content")%>%
+  addTitle("Age Comparison")%>%
+  addPlot(function(x)print(vis.age),width=6,offx=1.8,offy=1,height=5)%>%
+  addFlexTable(FlexTable(tab.age),width=5,offx=2.5,offy=6.2,height=1)%>%
+  # Gender
+  addSlide("Title and Content")%>%
+  addTitle("Gender Comparison")%>%
+  addPlot(function(x)print(vis.gender),width=6,offx=1.8,offy=1,height=5)%>%
+  addFlexTable(FlexTable(tab.gender),width=5,offx=2.5,offy=6.2,height=1)%>%
+  # Race
+  addSlide("Title and Content")%>%
+  addTitle("Ethnicity Comparison")%>%
+  addPlot(function(x)print(vis.race),width=6,offx=1.8,offy=1,height=5)%>%
+  addFlexTable(FlexTable(tab.race),width=5,offx=2.5,offy=6.2,height=1)%>%
+  # Marital Status
+  addSlide("Title and Content")%>%
+  addTitle("Marital Status Comparison")%>%
+  addPlot(function(x)print(vis.marital),width=6,offx=1.8,offy=1,height=5)%>%
+  addFlexTable(FlexTable(tab.marital),width=5,offx=2.5,offy=6.2,height=1)%>%
+  # MediFund Status
+  addSlide("Title and Content")%>%
+  addTitle("MediFund Status Comparison")%>%
+  addPlot(function(x)print(vis.medifund),width=6,offx=1.8,offy=1,height=5)%>%
+  addFlexTable(FlexTable(tab.medifund),width=5,offx=2.5,offy=6.2,height=1)%>%
+  # Diabetes History
+  addSlide("Title and Content")%>%
+  addTitle("Diabetes History Comparison")%>%
+  addPlot(function(x)print(vis.diab.yr),width=6,offx=1.8,offy=1,height=5)%>%
+  addFlexTable(FlexTable(tab.diab.yr),width=5,offx=2.5,offy=6.2,height=1)%>%
+  # Patient Type
+  addSlide("Title and Content")%>%
+  addTitle("Patient Type (NHGP/TTSH) Comparison")%>%
+  addPlot(function(x)print(vis.pat_type),width=6,offx=1.8,offy=1,height=5)%>%
+  addFlexTable(FlexTable(tab.pat_type),width=5,offx=2.5,offy=6.2,height=1)%>%
+  # Disease Prevalence
+  addSlide("Title and Content")%>%
+  addTitle("Disease Prevalence Comparison")%>%
+  addPlot(function(x)print(vis.prev),width=6,offx=1.8,offy=1,height=6.5)%>%
+  # Dashboard - Demographics
+  addSlide("Title and Content")%>%
+  addTitle("Dashboard - Demographics Comparison")%>%
+  addPlot(function(x)grid.draw(grid.arrange(vis.age,vis.gender,vis.race,vis.marital,layout_matrix=matrix(c(1,1,1,1,2,2,3,3,3,4,4,4),2,6,byrow=T))),offy=1,height=6.5)%>%
+  # Dashboard - Medical History
+  addSlide("Title and Content")%>%
+  addTitle("Dashboard - Medical History Comparison")%>%
+  addPlot(function(x)grid.arrange(vis.diab.yr,vis.medifund,vis.pat_type,layout_matrix=matrix(c(1,1,2,3),2,2,byrow=T)),width=6.5,offx=1.8,offy=1,height=6.5)%>%
+  # Dashboard - Disease Prevalence
+  addSlide("Title and Content")%>%
+  addTitle("Dashboard - Disease Prevalence Comparison")%>%
+  addPlot(function(x)print(vis.prev),width=6,offx=1.8,offy=1,height=6.5)
+
+writeDoc(mysld,"Data Comparison by Outcome.pptx")
 ```

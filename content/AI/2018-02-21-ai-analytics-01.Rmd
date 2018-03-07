@@ -80,49 +80,80 @@ vis.prev<-Prev.vis(prev.df)
 ```
 
 
+## Initial slides for auto-generation
+```{r,echo = FALSE}
+require("ReporteRs")
+mysld<-pptx("Overview of Dataset","2018-02-21-ai-analytics/template.pptx")%>%
+  addSlide("Title Slide")%>%
+  addTitle("Overview of Dataset")
+```
+
 ## Individual Visualization
 
 Age distribution
 ```{r,echo = FALSE}
-vis.age
-
+vis.age+wm
+mysld<-addSlide(mysld,"Title and Content")%>%
+  addTitle("Age Distribution")%>%
+  addPlot(function(x)print(vis.age))
 ```
 
 Gender distribution
 ```{r,echo = FALSE}
 vis.gender
+mysld<-addSlide(mysld,"Title and Content")%>%
+  addTitle("Gender Distribution")%>%
+  addPlot(function(x)print(vis.gender))
 ```
 
 Race distribution
 ```{r,echo = FALSE}
-vis.race
+vis.race+wm
+mysld<-addSlide(mysld,"Title and Content")%>%
+  addTitle("Ethnicity Distribution")%>%
+  addPlot(function(x)print(vis.race))
 ```
 
 Marital status distribution
 ```{r,echo = FALSE}
-vis.marital
+vis.marital+wm
+mysld<-addSlide(mysld,"Title and Content")%>%
+  addTitle("Marital Status Distribution")%>%
+  addPlot(function(x)print(vis.marital))
 ```
 
 Medifund distribution
 ```{r,echo = FALSE}
 vis.medifund
+mysld<-addSlide(mysld,"Title and Content")%>%
+  addTitle("MediFund Distribution")%>%
+  addPlot(function(x)print(vis.medifund))
 ```
 
 
 Diabetes year distribution
 ```{r,echo = FALSE}
-vis.diab.yr
+vis.diab.yr+wm
+mysld<-addSlide(mysld,"Title and Content")%>%
+  addTitle("Diabetes History Distribution")%>%
+  addPlot(function(x)print(vis.diab.yr))
 ```
 
 Patient type distribution
 ```{r,echo = FALSE}
-vis.pat_type
+vis.pat_type+wm
+mysld<-addSlide(mysld,"Title and Content")%>%
+  addTitle("Patient Type (NHGP/TTSH) Distribution")%>%
+  addPlot(function(x)print(vis.pat_type))
 ```
 
 
 Disease Prevalence
 ```{r,echo = FALSE}
-vis.prev
+vis.prev+wm
+mysld<-addSlide(mysld,"Title and Content")%>%
+  addTitle("Disease Prevalence Distribution")%>%
+  addPlot(function(x)print(vis.prev))
 ```
 
 
@@ -131,25 +162,38 @@ vis.prev
 ## Dashboard
 ### Demographic
 ```{r,fig.asp = 1.2,fig.width=10}
-grid.arrange(vis.age,vis.gender,vis.race,vis.marital,layout_matrix=matrix(1:4,2,2,byrow=T))
+#arrangeGrob(grobs=list(vis.age,vis.gender,vis.race,vis.marital),layout_matrix=matrix(1:4,2,2,byrow=T),height=800,width=900)%>%grid.draw
+grid.arrange(vis.age,vis.gender,vis.race,vis.marital+wm,layout_matrix=matrix(c(1,1,1,1,2,2,3,3,3,4,4,4),2,6,byrow=T))
+mysld<-addSlide(mysld,"Title and Content")%>%
+  addTitle("Dashboard - Demographics")%>%
+  addPlot(function(x)grid.arrange(vis.age,vis.gender,vis.race,vis.marital,layout_matrix=matrix(c(1,1,1,1,2,2,3,3,3,4,4,4),2,6,byrow=T)),vector.graphic=F,offx=1.7,offy=.9,width=6.5,height=6.5)
 ```
 
 
-Disease related history
+Medical history
 ```{r,fig.asp = 1.2,fig.width=10}
 grid.arrange(vis.diab.yr,vis.medifund,vis.pat_type,layout_matrix=matrix(c(1,1,2,3),2,2,byrow=T))
+mysld<-addSlide(mysld,"Title and Content")%>%
+  addTitle("Dashboard - Medical History")%>%
+  addPlot(function(x)grid.arrange(vis.diab.yr,vis.medifund,vis.pat_type,layout_matrix=matrix(c(1,1,2,3),2,2,byrow=T)),vector.graphic=F,offx=1.7,offy=.9,width=6.5,height=6.5)
 ```
 
 
 Disease prevalence
 ```{r}
 vis.prev
+mysld<-addSlide(mysld,"Title and Content")%>%
+  addTitle("Dashboard - Disease Prevalence")%>%
+  addPlot(function(x)print(vis.prev))
 ```
 
 
+Write Slides for Download
+```{r}
+writeDoc(mysld,"Overview of Dataset.pptx")
+```
 
-
-
+[Download]("Overview of Dataset.pptx") the summary slides
 
 
 

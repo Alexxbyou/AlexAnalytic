@@ -41,6 +41,10 @@ require(gridExtra)
 # Column functions for data preparation
 ##########################
 
+wm<-geom_text(aes(x=Inf, y=Inf, label="HSOR@NHG"),hjust=1,vjust=1,colour="white",size=10)
+wm.fl<-geom_text(aes(x=-Inf, y=Inf, label="HSOR@NHG"),hjust=1,vjust=-.3,colour="white",size=10)
+
+
 # multiple columns, to solve the frequency or prevalence
 col.aggr<-function(name,df){
   as.data.frame(table(df[,getcolumn(name,df)]),stringsAsFactors=F)
@@ -143,10 +147,10 @@ age.vis<-function(
   elderly=65
 ){
   if(is.vector(age)){
-    age.vis.sing(age,cutoff,elderly)
+    age.vis.sing(age,cutoff,elderly)+wm
   }else{
     names(age)<-c("age","group")
-    age.vis.comp(age,cutoff,elderly)
+    age.vis.comp(age,cutoff,elderly)+wm
   }
 }
 
@@ -236,7 +240,7 @@ cat.vis<-function(data,Title){
 
 cat.vis.sing<-function(data,Title){
   if(length(unique(data[,1]))>3){
-    cat.vis.bar.sing(data,Title)
+    cat.vis.bar.sing(data,Title)+wm
   }else{
     cat.vis.donut.sing(data,Title)
   }
@@ -244,7 +248,7 @@ cat.vis.sing<-function(data,Title){
 
 cat.vis.comp<-function(data,Title){
   if(length(unique(data[,1]))>3){
-    cat.vis.bar.comp(data,Title)
+    cat.vis.bar.comp(data,Title)+wm
   }else{
     cat.vis.donut.comp(data,Title)
   }
@@ -376,9 +380,9 @@ Prev.vis<-function(
   Title="Disease Prevalence"
 ){
   if(any(grepl("grp|group",names(prev.df),ignore.case = T))){
-    Prev.vis.comp(prev.df,Title)
+    Prev.vis.comp(prev.df,Title)+wm.fl
   }else{
-    Prev.vis.sing(prev.df,Title)
+    Prev.vis.sing(prev.df,Title)+wm.fl
   }
 }
 

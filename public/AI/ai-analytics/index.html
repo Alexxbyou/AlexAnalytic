@@ -140,29 +140,46 @@ prev.df$Disease[c(7,11,12)]&lt;-c(&quot;Heart Failure&quot;,&quot;Major Amputati
 prev.df&lt;-df.sort(prev.df)
 vis.prev&lt;-Prev.vis(prev.df)</code></pre>
 </div>
+<div id="initial-slides-for-auto-generation" class="section level2">
+<h2>Initial slides for auto-generation</h2>
+<pre><code>## Loading required package: ReporteRs</code></pre>
+<pre><code>## Loading required package: ReporteRsjars</code></pre>
+</div>
 <div id="individual-visualization" class="section level2">
 <h2>Individual Visualization</h2>
-<p>Age distribution <img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>Gender distribution <img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>Race distribution <img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>Marital status distribution <img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p>Medifund distribution <img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>Diabetes year distribution <img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<p>Patient type distribution <img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<p>Disease Prevalence <img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Age distribution <img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Gender distribution <img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Race distribution <img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Marital status distribution <img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Medifund distribution <img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Diabetes year distribution <img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Patient type distribution <img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Disease Prevalence <img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 </div>
 <div id="dashboard" class="section level2">
 <h2>Dashboard</h2>
 <div id="demographic" class="section level3">
 <h3>Demographic</h3>
 <pre class="r"><code>grid.arrange(vis.age,vis.gender,vis.race,vis.marital,layout_matrix=matrix(1:4,2,2,byrow=T))</code></pre>
-<p><img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-11-1.png" width="960" /></p>
-<p>Disease related history</p>
-<pre class="r"><code>grid.arrange(vis.diab.yr,vis.medifund,vis.pat_type,layout_matrix=matrix(c(1,1,2,3),2,2,byrow=T))</code></pre>
 <p><img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-12-1.png" width="960" /></p>
+<pre class="r"><code>mysld&lt;-addSlide(mysld,&quot;Title and Content&quot;)%&gt;%
+  addTitle(&quot;Dashboard - Demographics&quot;)%&gt;%
+  addPlot(function(x)grid.arrange(vis.age,vis.gender,vis.race,vis.marital,layout_matrix=matrix(1:4,2,2,byrow=T)))</code></pre>
+<p>Medical history</p>
+<pre class="r"><code>grid.arrange(vis.diab.yr,vis.medifund,vis.pat_type,layout_matrix=matrix(c(1,1,2,3),2,2,byrow=T))</code></pre>
+<p><img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-13-1.png" width="960" /></p>
+<pre class="r"><code>mysld&lt;-addSlide(mysld,&quot;Title and Content&quot;)%&gt;%
+  addTitle(&quot;Dashboard - Medical History&quot;)%&gt;%
+  addPlot(function(x)grid.arrange(vis.diab.yr,vis.medifund,vis.pat_type,layout_matrix=matrix(c(1,1,2,3),2,2,byrow=T)))</code></pre>
 <p>Disease prevalence</p>
 <pre class="r"><code>vis.prev</code></pre>
-<p><img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="/AI/2018-02-21-ai-analytics-01_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<pre class="r"><code>mysld&lt;-addSlide(mysld,&quot;Title and Content&quot;)%&gt;%
+  addTitle(&quot;Dashboard - Disease Prevalence&quot;)%&gt;%
+  addPlot(function(x)print(vis.prev))</code></pre>
+<p>Write Slides for Download</p>
+<pre class="r"><code>writeDoc(mysld,&quot;Overview of Dataset.pptx&quot;)</code></pre>
+<p><a href="%22./Overview%20of%20Dataset.pptx%22">Download</a> the summary slides</p>
 </div>
 </div>
 

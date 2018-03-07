@@ -9,7 +9,7 @@
 ##########################################################################
 library(knitr)
 library(kableExtra)
-
+options("ReporteRs-font")
 
 ##########################
 # Age processing
@@ -97,6 +97,5 @@ coef.temp.func<-function(data,colpattern){
     kable("html")%>%
     kable_styling("striped", full_width = F)
 }
-
 
 

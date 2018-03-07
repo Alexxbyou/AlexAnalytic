@@ -1,0 +1,261 @@
+---
+title: ai-analytic-04
+author: Alex
+date: '2018-03-06'
+slug: ai-analytic-04
+categories:
+  - AI
+  - R
+tags:
+  - AI
+  - analysis
+  - machine learning
+  - plot
+  - R Markdown
+  - R
+  - regression
+  - visualization
+---
+
+
+```{r}
+source("2018-02-21-ai-analytics/BDVis.R")
+source("2018-02-21-ai-analytics/UniVarAnal.R")
+source("2018-02-21-ai-analytics/RiskPrediction.R")
+CH1.demo<-readRDS("2018-02-21-ai-analytics/CH1.demo.RDS")
+CH1.out<-readRDS("2018-02-21-ai-analytics/CH1.out.RDS")
+pat.grp<-CH1.out[,1:2]
+pat.grp$Death<-sapply(as.character(pat.grp$Death),function(x)switch(x,"0"="Alive","1"="Death"))
+names(pat.grp)[2]<-"group"
+CH1.demo<-left_join(CH1.demo,pat.grp)
+
+mdl.strct<-readRDS("2018-02-21-ai-analytics/mdl.strct.RDS")
+mdl.data<-readRDS("2018-02-21-ai-analytics/mdl.data.RDS")
+
+#########################################################################
+# Overview of dataset
+#########################################################################
+
+#Age distribution
+vis.age<-age.vis(CH1.demo[,getcolumn("age",CH1.demo)])
+
+
+#Gender distribution
+cat.df<-col.aggr("gender",CH1.demo)
+vis.gender<-cat.vis(cat.df,Title="Gender")
+
+
+#Race distribution
+cat.df<-col.aggr("Race",CH1.demo)
+cat.df<-cat.df[c(1,3,2,4),]
+vis.race<-cat.vis(cat.df,Title="Ethnicity")
+
+
+#Marital status distribution
+cat.df<-col.aggr("marital",CH1.demo)
+cat.df$Var1[1]<-"Devorced"
+cat.df<-cat.df[c(3,2,1,5,4),]
+vis.marital<-cat.vis(cat.df,Title="Marital Status")
+
+
+#Medifund distribution
+cat.df<-col.aggr("mediFundHx",CH1.demo)
+cat.df$Var1<-c("No","Yes")
+cat.df<-cat.df[2:1,]
+vis.medifund<-cat.vis(cat.df,Title="MediFund")
+
+
+
+#Diabetes year distribution
+cat.df<-col.aggr("Diabetes_year",CH1.demo)
+cat.df<-cat.df[c(1,3:5,2),]
+vis.diab.yr<-cat.vis(cat.df,Title="Diabetes Year")
+
+
+#Patient type distribution
+cat.df<-col.aggr("PAT_TYPE",CH1.demo)
+vis.pat_type<-cat.vis(cat.df,Title="Patient type")
+
+
+
+#Disease Prevalence
+prev.df<-cols.aggr(CH1.demo[8:19])
+prev.df$Disease[c(7,11,12)]<-c("Heart Failure","Major Amputation","Minor Amputation")
+prev.df<-df.sort(prev.df)
+vis.prev<-Prev.vis(prev.df)
+
+
+
+#########################################################################
+# Data Comparison by Outcome
+#########################################################################
+
+#Age distribution
+vis.age.comp<-age.vis(CH1.demo[,getcolumn("age|group",CH1.demo)])
+tab.age.comp<-coef.temp.func(CH1.demo,"age|group")
+
+
+#Gender distribution
+cat.df<-col.aggr("gender|group",CH1.demo)
+vis.gender.comp<-cat.vis(cat.df,Title="Gender")
+tab.gender.comp<-coef.temp.func(CH1.demo,"gender|group")
+
+
+#Race distribution
+cat.df<-col.aggr("Race|group",CH1.demo)
+vis.race.comp<-cat.vis(cat.df,Title="Ethnicity")
+tab.race.comp<-coef.temp.func(CH1.demo,"race|group")
+
+
+#Marital status distribution
+cat.df<-col.aggr("marital|group",CH1.demo)
+cat.df[c(1,6),1]<-"Devorced"
+vis.marital.comp<-cat.vis(cat.df,Title="Marital Status")
+tab.marital.comp<-coef.temp.func(CH1.demo,"marital|group")
+
+
+#Medifund distribution
+cat.df<-col.aggr("mediFundHx|group",CH1.demo)
+cat.df[,1]<-rep(c("No","Yes"),2)
+vis.medifund.comp<-cat.vis(cat.df,Title="MediFund")
+tab.medifund.comp<-coef.temp.func(CH1.demo,"mediFundHx|group")
+
+
+
+#Diabetes year distribution
+cat.df<-col.aggr("Diabetes_year|group",CH1.demo)
+cat.df$Diabetes_year<-factor(cat.df$Diabetes_year,levels=cat.df[c(1,3:5,2),1])
+vis.diab.yr.comp<-cat.vis(cat.df,Title="Diabetes Year")
+tab.diab.yr.comp<-coef.temp.func(CH1.demo,"Diabetes_year|group")
+
+
+#Patient type distribution
+cat.df<-col.aggr("PAT_TYPE|group",CH1.demo)
+vis.pat_type.comp<-cat.vis(cat.df,Title="Patient type")
+tab.pat_type.comp<-coef.temp.func(CH1.demo,"PAT_TYPE|group")
+
+
+
+#Disease Prevalence
+demo.sub<-CH1.demo[,c(8:19,22)]
+names(demo.sub)[c(7,11,12)]<-c("Heart Failure","Major Amputation","Minor Amputation")
+prev.df<-cols.aggr(demo.sub)
+prev.df<-df.sort(prev.df)
+vis.prev.comp<-Prev.vis(prev.df)
+```
+
+
+## Data Overview
+
+### Demographics
+
+```{R,fig.asp = .85,fig.width=10,echo = FALSE,message=F}
+grid.arrange(vis.age,vis.gender,vis.race,vis.marital,layout_matrix=matrix(c(1,1,1,1,2,2,3,3,3,4,4,4),2,6,byrow=T))
+```
+
+### Medical History
+
+```{R,fig.asp = 1.2,fig.width=8,echo = FALSE,message=F}
+grid.arrange(vis.diab.yr,vis.medifund,vis.pat_type,layout_matrix=matrix(c(1,1,2,3),2,2,byrow=T))
+```
+
+Disease prevalence
+```{r,echo = FALSE,message=F}
+vis.prev
+```
+
+## Comparison by Ouctome
+
+### Demographics
+
+```{R,fig.asp = .85,fig.width=10,echo = FALSE,message=F}
+grid.arrange(vis.age.comp,vis.gender.comp,vis.race.comp,vis.marital.comp,layout_matrix=matrix(c(1,1,1,1,2,2,3,3,3,4,4,4),2,6,byrow=T))
+```
+
+
+
+### Medical History
+
+```{R,fig.asp = 1.2,fig.width=8,echo = FALSE,message=F}
+grid.arrange(vis.diab.yr.comp,vis.medifund.comp,vis.pat_type.comp,layout_matrix=matrix(c(1,1,2,3),2,2,byrow=T))
+```
+
+Disease prevalence
+```{r,echo = FALSE,message=F}
+vis.prev.comp
+```
+
+## Regression Analysis
+
+```{R,echo=F,message=F}
+mdl.glm<-log.reg(mdl.data)
+coef.proc.df<-coef.proc(summary(mdl.glm)$coef)
+coef.proc.df<-coef.intpt(coef.proc.df,mdl.data,mdl.strct)
+mdl.pred<-pred.score.fun(mdl.glm,mdl.data)
+```
+
+### Coefficients
+
+```{R,echo=F,message=F}
+coef.df.to.kable(coef.proc.df)
+```
+
+### Visualization of Coefficient
+
+```{R,echo=F,message=F}
+reg.cat.vis("DiabetesYear",coef.proc.df)
+reg.cat.vis("BMI",coef.proc.df)
+reg.cat.vis("HbA1c",coef.proc.df)
+reg.cat.vis("BP",coef.proc.df)
+reg.cat.vis("LDL",coef.proc.df)
+para.coef.df<-coef.proc.df[coef.proc.df$VarGrp=="Comorbidity & Complication",]
+para.coef.df<-para.coef.df[rev(order(para.coef.df$Variable)),]
+reg.para.var.vis(para.coef.df,"Comorbidity & Complication")
+```
+
+## Model Validation
+
+### Prediction Score Distribution
+
+```{R,echo=F,message=F}
+pred.score.dist.vis(mdl.pred)
+```
+
+### ROC & AUC
+
+```{R,echo=F,message=F}
+roc.vis(mdl.pred)
+```
+
+
+### Fitting performance
+
+```{R,fig.width=12,fit.height=6,echo=F,message=F}
+perf.sum.vis(mdl.pred)
+```
+
+
+### Fitting performance
+
+```{R,width=10,echo=F,message=F}
+threshold.sel.vis(mdl.pred)
+```
+
+
+### Lift
+
+How much better if using the prediction compare to pure guess
+```{R,echo=F,message=F}
+perf.vis(mdl.pred,"lift")
+```
+
+
+
+
+
+
+
+
+
+
+
