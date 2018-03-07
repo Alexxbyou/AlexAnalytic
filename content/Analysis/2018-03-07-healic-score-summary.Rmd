@@ -1,0 +1,114 @@
+---
+title: "Healic Score Summary"
+author: "Alex"
+date: '2018-03-07'
+output: pdf_document
+slug: healic-score-summary
+tags: analysis
+categories: Analysis
+---
+
+```{R,echo=F,message=F}
+library(dplyr)
+library(ggplot2)
+source("R source/BDVis.R")
+healic.data<-readRDS("R source/Healic.score.data.RDS")
+#healic.data$RiskCat<-cut(healic.data$Total_score,c(0,51,60,70,85,100),labels=c("Extreme","High","Medium","Moderate","Minimal"))
+#healic.data$RiskCat<-factor(healic.data$RiskCat,levels=rev(c("Extreme","High","Medium","Moderate","Minimal")))
+#healic.data$BMI_cat<-factor(healic.data$BMI_cat,levels=c("<18.5","18.5-22.9","23.0-27.4","27.5-32.4","32.5-37.4",">=37.5"))
+#healic.data$HbA1c<-factor(healic.data$HbA1c,levels=c("<=6.0","6.1-6.9","7.0-7.7","7.8-11.0",">=11.1"))
+#healic.data$SYSTOLIC<-factor(healic.data$SYSTOLIC,levels=c("<130","130-139","140-159","160-179",">180"))
+#healic.data$DIASTOLIC<-factor(healic.data$DIASTOLIC,levels=c("<85","85-89","90-99","100-109",">=110"))
+#healic.data$Tryglyceride<-factor(healic.data$Tryglyceride,levels=c("<1.7","1.7-2.2","2.3-4.4","4.5-11.0",">11.0"))
+#healic.data$LDL<-factor(healic.data$LDL,levels=c("<2.6","2.6-3.3","3.4-4.0","4.1-4.8",">=4.9"))
+#healic.data$HDL<-factor(healic.data$HDL,levels=c("<1.0","1.0-1.2","1.3-1.5",">=1.6"))
+#healic.data$Ratio<-factor(healic.data$Ratio,levels=c("<3.3","3.4-4.4","4.5-5.0","5.1-6.0",">6.1"))
+#saveRDS(healic.data,"R source/Healic.score.data.RDS")
+
+
+
+
+```
+
+
+### Univariate Analysis
+
+```{R,echo=F}
+(v.age<-age.vis(healic.data$Age))
+(v.gen<-table(healic.data$Gender.Full.Text)%>%data.frame%>%cat.vis("Gender"))
+(v.rac<-table(healic.data$Race.Full.Text)%>%data.frame%>%cat.vis.bar.sing("Ethnicity")+wm)
+(v.smk<-table(healic.data$Smoking)%>%data.frame%>%cat.vis("Smoking"))
+(v.hba<-table(healic.data$HbA1c)%>%data.frame%>%cat.vis("HbA1c"))
+(v.wai<-table(healic.data$Waist)%>%data.frame%>%cat.vis("Waist"))
+(v.bmi<-table(healic.data$BMI_cat)%>%data.frame%>%cat.vis("BMI"))
+(v.sys<-table(healic.data$SYSTOLIC)%>%data.frame%>%cat.vis("Systolic BP"))
+(v.dia<-table(healic.data$DIASTOLIC)%>%data.frame%>%cat.vis("Diastolic BP"))
+(v.try<-table(healic.data$Tryglyceride)%>%data.frame%>%cat.vis("Tryglyceride"))
+(v.ldl<-table(healic.data$LDL)%>%data.frame%>%cat.vis("LDL"))
+(v.hdl<-table(healic.data$HDL)%>%data.frame%>%cat.vis("HDL"))
+(v.rat<-table(healic.data$Ratio)%>%data.frame%>%cat.vis("LDL/HDL Ratio"))
+(v.rsk<-table(healic.data$RiskCat)%>%data.frame%>%cat.vis("Healic Risk Category"))
+
+
+```
+
+
+### Risk Category ~ Predictor
+
+```{R,echo=F}
+
+(v.age.comp<-healic.data[,c("Age","RiskCat")]%>%age.vis)
+(v.gen.comp<-(table(healic.data[,c("Gender.Full.Text","RiskCat")])%>%data.frame)[,c(1,3,2)]%>%cat.vis.bar.comp("Gender")+wm)
+(v.rac.comp<-(table(healic.data[,c("Race.Full.Text","RiskCat")])%>%data.frame)[,c(1,3,2)]%>%cat.vis.bar.comp("Ethnicity")+wm)
+(v.smk.comp<-(table(healic.data[,c("Smoking","RiskCat")])%>%data.frame)[,c(1,3,2)]%>%cat.vis.bar.comp("Smoking")+wm)
+(v.hba.comp<-(table(healic.data[,c("HbA1c","RiskCat")])%>%data.frame)[,c(1,3,2)]%>%cat.vis.bar.comp("HbA1c")+wm)
+(v.wai.comp<-(table(healic.data[,c("Waist","RiskCat")])%>%data.frame)[,c(1,3,2)]%>%cat.vis.bar.comp("Waist")+wm)
+(v.bmi.comp<-(table(healic.data[,c("BMI_cat","RiskCat")])%>%data.frame)[,c(1,3,2)]%>%cat.vis.bar.comp("BMI")+wm)
+(v.sys.comp<-(table(healic.data[,c("SYSTOLIC","RiskCat")])%>%data.frame)[,c(1,3,2)]%>%cat.vis.bar.comp("Systolic BP")+wm)
+(v.dia.comp<-(table(healic.data[,c("DIASTOLIC","RiskCat")])%>%data.frame)[,c(1,3,2)]%>%cat.vis.bar.comp("Diastolic BP")+wm)
+(v.try.comp<-(table(healic.data[,c("Tryglyceride","RiskCat")])%>%data.frame)[,c(1,3,2)]%>%cat.vis.bar.comp("Tryglyceride")+wm)
+(v.ldl.comp<-(table(healic.data[,c("LDL","RiskCat")])%>%data.frame)[,c(1,3,2)]%>%cat.vis.bar.comp("LDL")+wm)
+(v.hdl.comp<-(table(healic.data[,c("HDL","RiskCat")])%>%data.frame)[,c(1,3,2)]%>%cat.vis.bar.comp("HDL")+wm)
+(v.rat.comp<-(table(healic.data[,c("Ratio","RiskCat")])%>%data.frame)[,c(1,3,2)]%>%cat.vis.bar.comp("LDL/HDL Ratio")+wm)
+
+```
+
+
+```{R}
+require(ReporteRs)
+require(grid)
+healic.sld<-pptx("Healic Risk Score Summary","R source/template.pptx")%>%
+  addSlide("Title Slide")%>%addTitle("Healic Risk Score Summary")%>%
+  addSlide("Title Slide")%>%addTitle("Univariate Analysis")%>%
+  addSlide("Title and Content")%>%addTitle("Age distribution")%>%addPlot(function(x)grid.draw(v.age),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("Gender distribution")%>%addPlot(function(x)grid.draw(v.gen),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("Ethnicity distribution")%>%addPlot(function(x)grid.draw(v.rac),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("Smoking status distribution")%>%addPlot(function(x)grid.draw(v.smk),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("HbA1c distribution")%>%addPlot(function(x)grid.draw(v.hba),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("Waist distribution")%>%addPlot(function(x)grid.draw(v.wai),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("BMI category distribution")%>%addPlot(function(x)grid.draw(v.bmi),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("Blood Pressure (Sys) distribution")%>%addPlot(function(x)grid.draw(v.sys),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("Blood Pressure (Dia) distribution")%>%addPlot(function(x)grid.draw(v.dia),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("Tryglyceride distribution")%>%addPlot(function(x)grid.draw(v.try),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("LDL distribution")%>%addPlot(function(x)grid.draw(v.ldl),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("HDL distribution")%>%addPlot(function(x)grid.draw(v.hdl),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("LDL/HDL ratio distribution")%>%addPlot(function(x)grid.draw(v.rat),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("Healic risk category distribution")%>%addPlot(function(x)grid.draw(v.rat),vector.graphic=F)%>%
+  addSlide("Title Slide")%>%addTitle("Risk Factor vs Risk Category")%>%
+  addSlide("Title and Content")%>%addTitle("Age vs risk cat.")%>%addPlot(function(x)grid.draw(v.age.comp),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("Gender vs risk cat.")%>%addPlot(function(x)grid.draw(v.gen.comp),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("Ethnicity vs risk cat.")%>%addPlot(function(x)grid.draw(v.rac.comp),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("Smoking status vs risk cat.")%>%addPlot(function(x)grid.draw(v.smk.comp),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("HbA1c vs risk cat.")%>%addPlot(function(x)grid.draw(v.hba.comp),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("Waist vs risk cat.")%>%addPlot(function(x)grid.draw(v.wai.comp),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("BMI category vs risk cat.")%>%addPlot(function(x)grid.draw(v.bmi.comp),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("Blood Pressure (Sys) vs risk cat.")%>%addPlot(function(x)grid.draw(v.sys.comp),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("Blood Pressure (Dia) vs risk cat.")%>%addPlot(function(x)grid.draw(v.dia.comp),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("Tryglyceride vs risk cat.")%>%addPlot(function(x)grid.draw(v.try.comp),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("LDL vs risk cat.")%>%addPlot(function(x)grid.draw(v.ldl.comp),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("HDL vs risk cat.")%>%addPlot(function(x)grid.draw(v.hdl.comp),vector.graphic=F)%>%
+  addSlide("Title and Content")%>%addTitle("LDL/HDL ratio vs risk cat.")%>%addPlot(function(x)grid.draw(v.rat.comp),vector.graphic=F)
+
+writeDoc(healic.sld,"R source/Healic Risk Score Summary.pptx")
+```
+
